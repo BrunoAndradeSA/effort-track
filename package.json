@@ -1,0 +1,12 @@
+{
+  "name": "effort-track",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Hour and Effort Calculator application",
+  "scripts": {
+    "test": "node test-cli.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}

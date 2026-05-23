@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Effort Track - Calculadora de Horas e Esforço</title>
+  <meta name="description" content="Aplicação responsiva de calculadora de expressões de horas e estimativas de viabilidade de projetos.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="index.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  
+  <!-- Prevenir Flash of Unstyled Content (FOUC) carregando o tema imediatamente -->
+  <script>
+    {
+      const savedTheme = localStorage.getItem("color-scheme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", initialTheme);
+      document.querySelector('meta[name="color-scheme"]').content = initialTheme;
+    }
+  </script>
+</head>
+<body>
+
+  <!-- CABEÇALHO -->
+  <header class="app-header">
+    <div class="logo-container">
+      <span class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+      </span>
+      <h1>Effort Track</h1>
+    </div>
+    
+    <a href="https://github.com/BrunoAndradeSA" target="_blank" rel="noopener noreferrer" class="github-link" aria-label="GitHub">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+      </svg>
+    </a>
+    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar tema">
+      <!-- Ícone injetado dinamicamente via JS -->
+      <span>Tema</span>
+    </button>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="app-main">
+
+    <!-- NAVEGAÇÃO PRINCIPAL (ABAS) -->
+    <nav class="navigation-bar" role="tablist">
+      <button class="tab-btn active" role="tab" aria-selected="true" data-target="hours-section" id="tab-hours">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="9" y1="9" x2="15" y2="9"></line>
+          <line x1="9" y1="13" x2="15" y2="13"></line>
+          <line x1="9" y1="17" x2="15" y2="17"></line>
+          <line x1="5" y1="9" x2="5.01" y2="9"></line>
+          <line x1="5" y1="13" x2="5.01" y2="13"></line>
+          <line x1="5" y1="17" x2="5.01" y2="17"></line>
+        </svg>
+        Calculadora de Horas
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-target="effort-section" id="tab-effort">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+          <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+        </svg>
+        Viabilidade de Prazo
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-target="tests-section" id="tab-tests">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 11 12 14 22 4"></polyline>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+        </svg>
+        Testes Unitários
+      </button>
+    </nav>
+
+    <!-- 1. ABA CALCULADORA DE HORAS -->
+    <section id="hours-section" class="app-section active glass-panel" role="tabpanel" aria-labelledby="tab-hours">
+      <h2 class="section-title">Calculadora de Horas</h2>
+      <p class="section-subtitle">Realize cálculos matemáticos livremente combinando horas, minutos e números decimais.</p>
+      
+      <div class="calculator-container">
+        <!-- Campo central e botão de limpar -->
+        <div class="input-row">
+          <div class="calc-input-wrapper">
+            <input type="text" id="calc-input" class="main-calc-input" placeholder="Ex: (7:45 * 5) + 30h" aria-label="Digite a expressão de horas">
+          </div>
+          <button id="calc-clear" class="btn-clear" title="Limpar expressão">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            Limpar
+          </button>
+        </div>
+
+        <!-- Área de mensagens de validação / erros -->
+        <div id="calc-error" class="calc-error-box" role="alert">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <!-- Mensagem injetada via JS -->
+        </div>
+
+        <!-- Painel de Exibição do Resultado -->
+        <div class="calc-result-panel">
+          <div class="calc-result-label">Resultado Final (HH:mm)</div>
+          <div id="calc-result" class="calc-result-value">00:00</div>
+        </div>
+
+        <!-- Exemplos Rápidos -->
+        <div class="calc-examples-section">
+          <h3 class="examples-title">Exemplos para Testar:</h3>
+          <div class="calc-examples-grid">
+            <button class="calc-example-btn" data-expr="7:45 * 5">7:45 * 5</button>
+            <button class="calc-example-btn" data-expr="(7:45 * 5) + 30h">(7:45 * 5) + 30h</button>
+            <button class="calc-example-btn" data-expr="8h + 2:30">8h + 2:30</button>
+            <button class="calc-example-btn" data-expr="10h / 2">10h / 2</button>
+            <button class="calc-example-btn" data-expr="12h - 1:30">12h - 1:30</button>
+            <button class="calc-example-btn" data-expr="(2h + 30m) * 2">(2h + 30m) * 2</button>
+            <button class="calc-example-btn" data-expr="7:45 X 5">7:45 X 5</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. ABA CALCULADORA DE ESFORÇO (VIABILIDADE) -->
+    <section id="effort-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-effort">
+      <h2 class="section-title">Cálculo de Viabilidade de Prazo</h2>
+      <p class="section-subtitle">Estime a capacidade de desenvolvimento e garantia de qualidade (QA) para determinar a viabilidade de entrega de um prazo.</p>
+
+      <div class="effort-layout">
+        <!-- Formulário -->
+        <div class="effort-form-card">
+          <form id="effort-form" onsubmit="event.preventDefault();">
+            <!-- Datas -->
+            <div class="form-section-title">Prazo do Projeto</div>
+            <div class="form-grid-2cols">
+              <div class="form-group">
+                <label for="start-date">Data de Início</label>
+                <input type="date" id="start-date" required>
+              </div>
+              <div class="form-group">
+                <label for="end-date">Data de Fim</label>
+                <input type="date" id="end-date" required>
+              </div>
+            </div>
+
+            <!-- Equipe de DEV -->
+            <div class="form-section-title">Equipe de Desenvolvimento</div>
+            <div class="form-grid-2cols">
+              <div class="form-group">
+                <label for="qty-devs">Quantidade de DEVs</label>
+                <input type="number" id="qty-devs" min="0" value="3" placeholder="Ex: 3">
+              </div>
+              <div class="form-group">
+                <label for="hours-per-dev">Horas/DEV por dia</label>
+                <input type="text" id="hours-per-dev" value="08:00" placeholder="Ex: 08:00 ou 8h">
+              </div>
+            </div>
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label for="estimated-dev-hours">Esforço Estimado DEV (horas)</label>
+              <input type="number" id="estimated-dev-hours" min="0" value="180" placeholder="Ex: 240">
+            </div>
+
+            <!-- Equipe de QA -->
+            <div class="form-section-title">Equipe de QA</div>
+            <div class="form-grid-2cols">
+              <div class="form-group">
+                <label for="qty-qas">Quantidade de QAs</label>
+                <input type="number" id="qty-qas" min="0" value="1" placeholder="Ex: 1">
+              </div>
+              <div class="form-group">
+                <label for="hours-per-qa">Horas/QA por dia</label>
+                <input type="text" id="hours-per-qa" value="06:00" placeholder="Ex: 06:00 ou 6h">
+              </div>
+            </div>
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label for="estimated-qa-hours">Esforço Estimado QA (horas)</label>
+              <input type="number" id="estimated-qa-hours" min="0" value="40" placeholder="Ex: 60">
+            </div>
+          </form>
+        </div>
+
+        <!-- Exibição de Resultados -->
+        <div id="effort-results-container" class="effort-results-panel">
+          <!-- Card de Conclusão Global -->
+          <div id="effort-status-card" class="status-card">
+            <h3 id="effort-status-title">---</h3>
+            <p id="effort-status-desc">---</p>
+          </div>
+
+          <!-- Barra de Viabilidade -->
+          <div class="viability-section">
+            <div class="viability-header">
+              <span class="viability-label">Viabilidade do Prazo</span>
+              <span id="effort-viability-percent" class="viability-value">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div id="effort-viability-bar" class="progress-fill"></div>
+            </div>
+          </div>
+
+          <!-- Dias úteis calculados -->
+          <div class="working-days-badge">
+            <span>Período Considerado:</span>
+            <span id="effort-working-days" style="font-weight: 700;">0 dias úteis</span>
+          </div>
+
+          <!-- Divisão de Capacidade e Folga por Papel -->
+          <div class="roles-grid">
+            <!-- Card de Desenvolvimento -->
+            <div id="dev-status-card" class="role-status-card">
+              <div class="role-header">
+                <span class="role-title">Desenvolvedores</span>
+                <span id="dev-status-icon" class="role-badge-icon"></span>
+              </div>
+              <div class="role-stats-list">
+                <div class="stat-item">
+                  <span class="stat-label">Capacidade Total:</span>
+                  <span id="dev-capacity" class="stat-value">0h</span>
+                </div>
+                <div class="stat-item">
+                  <span id="dev-slack-delay-label" class="stat-label">Folga Estimada:</span>
+                  <span id="dev-slack-delay" class="stat-value">0d e 0h</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card de QA -->
+            <div id="qa-status-card" class="role-status-card">
+              <div class="role-header">
+                <span class="role-title">QAs (Qualidade)</span>
+                <span id="qa-status-icon" class="role-badge-icon"></span>
+              </div>
+              <div class="role-stats-list">
+                <div class="stat-item">
+                  <span class="stat-label">Capacidade Total:</span>
+                  <span id="qa-capacity" class="stat-value">0h</span>
+                </div>
+                <div class="stat-item">
+                  <span id="qa-slack-delay-label" class="stat-label">Folga Estimada:</span>
+                  <span id="qa-slack-delay" class="stat-value">0d e 0h</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. ABA TESTES UNITÁRIOS -->
+    <section id="tests-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-tests">
+      <div class="tests-header-row">
+        <div>
+          <h2 class="section-title">Testes Unitários</h2>
+          <p class="section-subtitle">Valide a corretude matemática do parser, lexer e rotinas de conversão em tempo real no navegador.</p>
+        </div>
+        <button id="run-tests-btn" class="btn-run-tests">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+          </svg>
+          Executar Testes
+        </button>
+      </div>
+
+      <div class="tests-panel">
+        <!-- Sumário -->
+        <div id="test-summary" class="test-summary-box running">
+          Aguardando execução...
+        </div>
+
+        <!-- Lista de Resultados dos Testes -->
+        <div id="test-results-list" class="test-results-list">
+          <!-- Injetado dinamicamente pelo testUi.js -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- RODAPÉ -->
+  <footer class="app-footer">
+    <p>Effort Track &copy; 2026. Desenvolvido por <a href="https://github.com/BrunoAndradeSA" target="_blank" rel="noopener noreferrer">BrunoAndradeSA</a>.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
