@@ -612,6 +612,15 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   font-weight: 500;
 }
 
+.status-card .completion-date {
+  font-size: 0.95rem;
+  opacity: 0.85;
+  font-weight: 500;
+  margin-top: 0.25rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
 /* Seção de Viabilidade (Barra de Progresso) */
 .viability-section {
   background: var(--bg-secondary);

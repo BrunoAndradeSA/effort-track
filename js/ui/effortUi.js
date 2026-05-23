@@ -12,6 +12,7 @@ export function initEffortUi() {
   const statusCard = document.getElementById("effort-status-card");
   const statusTitle = document.getElementById("effort-status-title");
   const statusDesc = document.getElementById("effort-status-desc");
+  const completionDateEl = document.getElementById("effort-completion-date");
   const viabilityPercent = document.getElementById("effort-viability-percent");
   const viabilityBar = document.getElementById("effort-viability-bar");
   const workingDaysEl = document.getElementById("effort-working-days");
@@ -102,6 +103,8 @@ export function initEffortUi() {
     // Atualizar status global
     statusTitle.textContent = res.global.resultText;
     statusDesc.textContent = `${res.global.canComplete ? "Folga" : "Atraso"} estimada: ${res.global.days}d e ${res.global.hours}h.`;
+    const parts = res.completionDate.split("-");
+    completionDateEl.textContent = `Data prevista de conclusão: ${parts[2]}/${parts[1]}/${parts[0]}`;
     
     if (res.global.canComplete) {
       statusCard.className = "status-card status-success";

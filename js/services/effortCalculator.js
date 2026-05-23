@@ -1,4 +1,4 @@
-import { calculateWorkingDays } from "../utils/timeUtils.js";
+import { calculateWorkingDays, addWorkingDays } from "../utils/timeUtils.js";
 
 /**
  * Calcula a viabilidade do projeto, capacidade das equipes e folga/atraso.
@@ -112,6 +112,12 @@ export function calculateEffort(params) {
     }
   }
 
+  // 5. Calcular data prevista de conclusão (considerando o gargalo)
+  const devWorkDaysNeeded = devDailyCapacity > 0 ? estimatedDevHours / devDailyCapacity : 0;
+  const qaWorkDaysNeeded = qaDailyCapacity > 0 ? estimatedQaHours / qaDailyCapacity : 0;
+  const bottleneckDays = Math.ceil(Math.max(devWorkDaysNeeded, qaWorkDaysNeeded));
+  const completionDate = bottleneckDays > 0 ? addWorkingDays(startDate, bottleneckDays) : startDate;
+
   return {
     workingDays,
     devCapacity,
@@ -124,6 +130,7 @@ export function calculateEffort(params) {
     devSlackDelay,
     qaSlackDelay,
     viability,
+    completionDate,
     global: {
       canComplete: projectCanComplete,
       resultText: globalResultText,

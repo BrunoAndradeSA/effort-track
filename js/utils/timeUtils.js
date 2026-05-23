@@ -97,3 +97,30 @@ export function calculateWorkingDays(startDateStr, endDateStr) {
 
   return workingDays;
 }
+
+/**
+ * Avança uma data somando dias úteis (ignorando sábados e domingos).
+ *
+ * @param {string} startDateStr - Data inicial (YYYY-MM-DD)
+ * @param {number} days - Quantidade de dias úteis a avançar
+ * @returns {string} Data resultante no formato YYYY-MM-DD
+ */
+export function addWorkingDays(startDateStr, days) {
+  if (!startDateStr || days <= 0) return startDateStr;
+
+  const date = new Date(startDateStr + "T00:00:00");
+  let added = 0;
+
+  while (added < days) {
+    date.setDate(date.getDate() + 1);
+    const dayOfWeek = date.getDay();
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+      added++;
+    }
+  }
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
