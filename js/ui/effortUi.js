@@ -101,7 +101,7 @@ export function initEffortUi() {
 
     // Atualizar status global
     statusTitle.textContent = res.global.resultText;
-    statusDesc.textContent = `${res.global.canComplete ? "Folga" : "Atraso"} estimado: ${res.global.days}d e ${res.global.hours}h.`;
+    statusDesc.textContent = `${res.global.canComplete ? "Folga" : "Atraso"} estimada: ${res.global.days}d e ${res.global.hours}h.`;
     
     if (res.global.canComplete) {
       statusCard.className = "status-card status-success";
