@@ -1,4 +1,4 @@
-# Effort Track ✨
+# Effort Track ⏰
 
 [![JavaScript](https://img.shields.io/badge/language-JavaScript-yellow.svg)](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript) [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 
