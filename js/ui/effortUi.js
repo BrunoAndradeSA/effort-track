@@ -1,5 +1,5 @@
 import { calculateEffort } from "../services/effortCalculator.js";
-import { parseTimeToMinutes } from "../utils/timeUtils.js";
+import { parseTimeToMinutes, maskTimeInput } from "../utils/timeUtils.js";
 
 /**
  * Inicializa a interface da Calculadora de Esforço.
@@ -172,6 +172,10 @@ export function initEffortUi() {
       `;
     }
   };
+
+  // Aplicar máscara de horário nos inputs de horas
+  maskTimeInput(document.getElementById("hours-per-dev"));
+  maskTimeInput(document.getElementById("hours-per-qa"));
 
   // Escutar eventos de entrada no formulário
   form.addEventListener("input", updateCalculation);

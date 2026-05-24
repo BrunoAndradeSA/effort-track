@@ -99,6 +99,48 @@ export function calculateWorkingDays(startDateStr, endDateStr) {
 }
 
 /**
+ * Aplica máscara de formatação HH:mm em um input text enquanto o usuário digita.
+ * Apenas dígitos são aceitos; o ":" é inserido automaticamente após os dois primeiros dígitos.
+ *
+ * @param {HTMLInputElement} input - O elemento input para aplicar a máscara
+ */
+export function maskTimeInput(input) {
+  input.addEventListener("input", () => {
+    let value = input.value.replace(/\D/g, "").slice(0, 4);
+
+    if (value.length >= 3) {
+      value = value.slice(0, 2) + ":" + value.slice(2);
+    }
+
+    input.value = value;
+  });
+
+  input.addEventListener("blur", () => {
+    if (!input.value) return;
+
+    const parts = input.value.split(":");
+    let hh = parts[0] ? parts[0].padStart(2, "0") : "00";
+    let mm = parts[1] ? parts[1].padStart(2, "0") : "00";
+
+    const hhNum = parseInt(hh, 10);
+    const mmNum = parseInt(mm, 10);
+
+    const hasError = hhNum > 23 || mmNum > 59;
+
+    if (hasError) {
+      input.classList.add("error-state-input");
+    } else {
+      input.classList.remove("error-state-input");
+    }
+
+    if (hhNum > 23) hh = "23";
+    if (mmNum > 59) mm = "59";
+
+    input.value = `${hh}:${mm}`;
+  });
+}
+
+/**
  * Avança uma data somando dias úteis (ignorando sábados e domingos).
  *
  * @param {string} startDateStr - Data inicial (YYYY-MM-DD)

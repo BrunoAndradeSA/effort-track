@@ -1,6 +1,7 @@
 import { initTheme } from "./ui/theme.js";
 import { initHoursUi } from "./ui/hoursUi.js";
 import { initEffortUi } from "./ui/effortUi.js";
+import { initDateDiffUi } from "./ui/dateDiffUi.js";
 import { initTestUi } from "./ui/testUi.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -36,5 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // 3. Inicializar as UIs correspondentes
   initHoursUi();
   initEffortUi();
+  initDateDiffUi();
   initTestUi();
 });

@@ -771,6 +771,86 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 }
 
 /* ==========================================================================
+   DIFERENÇA ENTRE DATAS
+   ========================================================================== */
+.date-diff-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.date-diff-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.date-diff-results {
+  display: none;
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.date-diff-results.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.diff-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 600px) {
+  .diff-stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.diff-stat-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+  box-shadow: var(--card-shadow);
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.diff-stat-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.diff-stat-icon {
+  font-size: 1.75rem;
+}
+
+.diff-stat-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.diff-stat-value {
+  font-family: var(--font-family-title);
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+/* ==========================================================================
    PAINEL DE TESTES UNITÁRIOS INTERATIVO
    ========================================================================== */
 .tests-panel {

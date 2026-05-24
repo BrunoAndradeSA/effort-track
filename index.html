@@ -69,6 +69,15 @@
         </svg>
         Viabilidade de Prazo
       </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-target="date-diff-section" id="tab-date-diff">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        Diferença entre Datas
+      </button>
       <button class="tab-btn" role="tab" aria-selected="false" data-target="tests-section" id="tab-tests">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="9 11 12 14 22 4"></polyline>
@@ -256,7 +265,65 @@
       </div>
     </section>
 
-    <!-- 3. ABA TESTES UNITÁRIOS -->
+    <!-- 3. ABA DIFERENÇA ENTRE DATAS -->
+    <section id="date-diff-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-date-diff">
+      <h2 class="section-title">Diferença entre Datas</h2>
+      <p class="section-subtitle">Calcule a quantidade de dias corridos, dias úteis e horas úteis entre duas datas.</p>
+
+      <div class="date-diff-layout">
+        <!-- Formulário -->
+        <div class="date-diff-form">
+          <div class="form-section-title">Período</div>
+          <div class="form-grid-2cols">
+            <div class="form-group">
+              <label for="diff-start-date">Data Inicial</label>
+              <input type="date" id="diff-start-date" required>
+            </div>
+            <div class="form-group">
+              <label for="diff-end-date">Data Final</label>
+              <input type="date" id="diff-end-date" required>
+            </div>
+          </div>
+
+          <div class="form-section-title">Jornada</div>
+          <div class="form-group">
+            <label for="diff-hours-per-day">Horas úteis por dia</label>
+            <input type="text" id="diff-hours-per-day" value="08:00" placeholder="Ex: 08:00 ou 8h">
+          </div>
+        </div>
+
+        <!-- Resultados -->
+        <div id="diff-error" class="calc-error-box" role="alert">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+
+        <div id="diff-result-container" class="date-diff-results">
+          <div class="diff-stats-grid">
+            <div class="diff-stat-card">
+              <span class="diff-stat-icon">📅</span>
+              <span class="diff-stat-label">Dias corridos</span>
+              <span id="diff-total-days" class="diff-stat-value">0 dias</span>
+            </div>
+            <div class="diff-stat-card">
+              <span class="diff-stat-icon">💼</span>
+              <span class="diff-stat-label">Dias úteis</span>
+              <span id="diff-working-days" class="diff-stat-value">0 dias</span>
+            </div>
+            <div class="diff-stat-card">
+              <span class="diff-stat-icon">⏰</span>
+              <span class="diff-stat-label">Total de horas úteis</span>
+              <span id="diff-total-hours" class="diff-stat-value">0h</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. ABA TESTES UNITÁRIOS -->
     <section id="tests-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-tests">
       <div class="tests-header-row">
         <div>
