@@ -36,7 +36,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 3. Registrar Service Worker para PWA
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js");
+    navigator.serviceWorker.register("./sw.js").then((registration) => {
+      // Verificar atualizações quando a aba ficar visível
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+          registration.update();
+        }
+      });
+
+      // Verificar a cada hora
+      setInterval(() => registration.update(), 60 * 60 * 1000);
+    });
+
+    // Recarregar a página automaticamente quando um novo SW ativar
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      window.location.reload();
+    });
   }
 
   // 4. Inicializar as UIs correspondentes

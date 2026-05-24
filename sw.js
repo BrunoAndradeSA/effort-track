@@ -1,4 +1,4 @@
-const CACHE = "effort-track-v1";
+const CACHE = "effort-track-v1"; // 🔁 Incremente a cada deploy (v1, v2, v3...)
 
 const PRECACHE = [
   "./",
