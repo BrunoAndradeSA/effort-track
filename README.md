@@ -1,6 +1,6 @@
 # Effort Track ⏰
 
-[![JavaScript](https://img.shields.io/badge/language-JavaScript-yellow.svg)](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript) [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
+[![JavaScript](https://img.shields.io/badge/language-JavaScript-yellow.svg)](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript) [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE) [![GitHub Pages](https://img.shields.io/badge/deploy-GitHub%20Pages-blue.svg)](https://brunoandradesa.github.io/effort-track/)
 
 Aplicação pequena (UI web) e utilitários CLI para calcular horas e esforço. Inclui um lexer/parser para expressões de tempo, avaliador, componentes de interface e um runner de testes simples. 🚀
 
@@ -24,7 +24,11 @@ Projeto minimalista e autossuficiente — **sem passo de build**. Abra `index.ht
 
 ## ▶️ Como Rodar
 
-### 🌐 Abrir a interface web (modo mais simples)
+### 🌐 Versão online
+
+Acesse: [**Effort Track**](https://brunoandradesa.github.io/effort-track/)
+
+### 📂 Abrir localmente (modo mais simples)
 
 1. Abrir o arquivo `index.html` no navegador.
 
