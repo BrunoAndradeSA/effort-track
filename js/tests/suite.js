@@ -1,4 +1,4 @@
-import { parseTimeToMinutes, formatMinutesToTime } from "../utils/timeUtils.js";
+import { parseTimeToMinutes, formatMinutesToTime, calculateWorkingDays, addWorkingDays } from "../utils/timeUtils.js";
 import { tokenize, TokenType } from "../parser/lexer.js";
 import { Parser } from "../parser/parser.js";
 import { calculateExpression } from "../parser/evaluator.js";
@@ -225,6 +225,86 @@ export const testSuite = [
 
       assertEqual(res.qaSlackDelay.days, 3);
       assertEqual(res.qaSlackDelay.hours, 2);
+
+      // completionDate: 8 dias úteis de 2026-06-01 (bottleneck DEV 7.5 → ceil 8)
+      assertEqual(res.completionDate, "2026-06-11");
+    }
+  },
+
+  // --- DIAS ÚTEIS ---
+  {
+    name: "Deve calcular dias úteis entre datas (seg-sex)",
+    category: "dias_uteis",
+    run() {
+      assertEqual(calculateWorkingDays("2026-06-01", "2026-06-05"), 5);
+    }
+  },
+  {
+    name: "Deve incluir a data inicial e final no cálculo",
+    category: "dias_uteis",
+    run() {
+      // Seg a Seg inclusive: Seg, Ter, Qua, Qui, Sex, Seg = 6
+      assertEqual(calculateWorkingDays("2026-06-01", "2026-06-08"), 6);
+    }
+  },
+  {
+    name: "Deve retornar 1 quando data inicial igual à final em dia útil",
+    category: "dias_uteis",
+    run() {
+      assertEqual(calculateWorkingDays("2026-06-01", "2026-06-01"), 1);
+    }
+  },
+  {
+    name: "Deve retornar 0 quando data inicial igual à final em fim de semana",
+    category: "dias_uteis",
+    run() {
+      assertEqual(calculateWorkingDays("2026-06-06", "2026-06-06"), 0);
+    }
+  },
+  {
+    name: "Deve retornar 0 quando data inicial maior que a final",
+    category: "dias_uteis",
+    run() {
+      assertEqual(calculateWorkingDays("2026-06-10", "2026-06-05"), 0);
+    }
+  },
+
+  // --- ADD WORKING DAYS ---
+  {
+    name: "Deve avançar dias úteis sem pular semana",
+    category: "add_working_days",
+    run() {
+      assertEqual(addWorkingDays("2026-06-01", 3), "2026-06-04");
+    }
+  },
+  {
+    name: "Deve pular finais de semana ao avançar",
+    category: "add_working_days",
+    run() {
+      // Sexta + 1 dia útil = Segunda
+      assertEqual(addWorkingDays("2026-06-05", 1), "2026-06-08");
+    }
+  },
+  {
+    name: "Deve avançar múltiplas semanas corretamente",
+    category: "add_working_days",
+    run() {
+      // Segunda + 10 dias úteis = Segunda + 2 semanas = próxima Segunda + 10 dias corridos
+      assertEqual(addWorkingDays("2026-06-01", 10), "2026-06-15");
+    }
+  },
+  {
+    name: "Deve retornar a mesma data quando dias for 0",
+    category: "add_working_days",
+    run() {
+      assertEqual(addWorkingDays("2026-06-01", 0), "2026-06-01");
+    }
+  },
+  {
+    name: "Deve retornar a mesma data quando dias for negativo",
+    category: "add_working_days",
+    run() {
+      assertEqual(addWorkingDays("2026-06-01", -5), "2026-06-01");
     }
   }
 ];
