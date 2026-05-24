@@ -1056,3 +1056,266 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 .animate-fade-in {
   animation: fadeIn 0.35s ease forwards;
 }
+
+/* ==========================================================================
+   RESPONSIVIDADE - TABLETS (< 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 1rem;
+  }
+
+  .logo-container h1 {
+    font-size: 1.25rem;
+  }
+
+  .github-link {
+    margin-right: 0.5rem;
+  }
+
+  .app-main {
+    padding: 0 1rem 2rem;
+    gap: 1rem;
+  }
+
+  .glass-panel {
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+  }
+
+  .section-subtitle {
+    margin-bottom: 1.25rem;
+  }
+
+  /* Navigation tabs — horizontal scroll no mobile */
+  .navigation-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 0.25rem;
+    scrollbar-width: none;
+  }
+
+  .navigation-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-btn {
+    padding: 0.6rem 0.9rem;
+    font-size: 0.82rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .tab-btn svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  /* Calculator */
+  .calculator-container {
+    gap: 1rem;
+  }
+
+  .main-calc-input {
+    padding: 1rem;
+    font-size: 1.1rem;
+  }
+
+  .btn-clear {
+    padding: 0 1rem;
+    font-size: 0.85rem;
+  }
+
+  .calc-result-panel {
+    padding: 1.25rem;
+  }
+
+  .calc-result-value {
+    font-size: 2.5rem;
+  }
+
+  .calc-result-label {
+    font-size: 0.78rem;
+  }
+
+  /* Esforço */
+  .effort-layout {
+    gap: 1.25rem;
+  }
+
+  .status-card {
+    padding: 1.25rem;
+  }
+
+  .status-card h3 {
+    font-size: 1.2rem;
+  }
+
+  .status-card p {
+    font-size: 0.95rem;
+  }
+
+  .viability-section {
+    padding: 1rem;
+  }
+
+  .viability-value {
+    font-size: 1.2rem;
+  }
+
+  .role-status-card {
+    padding: 1.15rem;
+  }
+
+  .role-title {
+    font-size: 1rem;
+  }
+
+  .working-days-badge {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.25rem;
+  }
+
+  /* Diferença entre Datas */
+  .diff-stat-card {
+    padding: 1rem;
+  }
+
+  .diff-stat-value {
+    font-size: 1.4rem;
+  }
+
+  .diff-stat-icon {
+    font-size: 1.5rem;
+  }
+
+  /* Testes */
+  .tests-header-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-run-tests {
+    justify-content: center;
+  }
+
+  .test-summary-box {
+    padding: 1rem;
+    font-size: 0.92rem;
+  }
+
+  .test-results-list {
+    max-height: 360px;
+    padding: 0.75rem;
+  }
+
+  .test-row-main {
+    gap: 0.5rem;
+  }
+
+  .test-name {
+    flex-basis: 100%;
+    order: 1;
+  }
+
+  .test-time {
+    order: 0;
+  }
+
+  /* Footer */
+  .app-footer {
+    padding: 1.5rem 1rem;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVIDADE - CELULARES (< 480px)
+   ========================================================================== */
+@media (max-width: 480px) {
+  .app-header {
+    padding: 0.75rem;
+  }
+
+  .logo-container h1 {
+    font-size: 1.1rem;
+  }
+
+  .theme-toggle-btn {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.78rem;
+  }
+
+  .theme-toggle-btn span {
+    display: none;
+  }
+
+  .glass-panel {
+    padding: 1.15rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+  }
+
+  .section-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-section-title {
+    font-size: 0.8rem;
+  }
+
+  .form-grid-2cols {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .form-group label {
+    font-size: 0.82rem;
+  }
+
+  .form-group input {
+    padding: 0.7rem 0.85rem;
+    font-size: 0.9rem;
+  }
+
+  .tab-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.78rem;
+  }
+
+  .calc-result-value {
+    font-size: 2rem;
+  }
+
+  .calc-error-box {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .status-card h3 {
+    font-size: 1.05rem;
+  }
+
+  .status-card p {
+    font-size: 0.9rem;
+  }
+
+  .role-status-card {
+    padding: 1rem;
+  }
+
+  .diff-stat-value {
+    font-size: 1.2rem;
+  }
+}
