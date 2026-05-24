@@ -10,7 +10,10 @@ Aplicação pequena (UI web) e utilitários CLI para calcular horas e esforço. 
 
 - ✅ **Parser/Avaliador** de expressões com suporte a horas e minutos
 - 🖥️ **UI web** para inserir e visualizar horas
-- 🧪 **Runner de testes** em Node (CLI)
+- 📊 **Viabilidade de Prazo** — calcula capacidade vs. esforço estimado
+- 📅 **Diferença entre Datas** — dias corridos, úteis e horas úteis entre duas datas
+- 📱 **PWA** — instalação na tela inicial e suporte offline
+- 🧪 **Runner de testes** em Node (CLI) com 26 testes
 
 ## 🟢 Status
 
@@ -70,11 +73,12 @@ Exemplo: `90` minutos → `01:30`.
 
 ## 🎛️ Layout da UI
 
-A aplicação usa abas (tabs) com três seções principais:
+A aplicação usa abas (tabs) com quatro seções principais:
 
-- **📅 Horas** — inserir e editar entradas de tempo
-- **📊 Esforço** — visão calculada do esforço/resultado
-- **🧪 Testes** — executar e visualizar testes (modo browser)
+- **📅 Horas** — calculadora de expressões com horas e minutos
+- **📊 Esforço** — viabilidade de prazo (capacidade DEV/QA vs. estimativa)
+- **📅 Datas** — diferença entre datas (dias corridos, úteis e horas úteis)
+- **🧪 Testes** — executar e visualizar testes no navegador
 
 ### 🏗️ Estrutura visual básica
 
@@ -90,26 +94,36 @@ A aplicação usa abas (tabs) com três seções principais:
 ./
 ├── index.html              # 🏠 Entrada da UI web
 ├── index.css               # 🎨 Estilos
-├── favicon.svg             # 🔖 Ícone do favicon
+├── manifest.json           # 📱 Manifesto PWA
+├── sw.js                   # 🔄 Service Worker (cache offline)
 ├── package.json            # 📦 Metadados e script `test`
 ├── LICENSE                 # 📜 Licença MIT
 ├── README.md               # 📖 Documentação
 ├── test-cli.js             # 🧪 Runner de testes em Node (CLI)
-└── js/
-    ├── main.js             # 🚀 Inicialização da aplicação
-    ├── utils/
-    │   └── timeUtils.js    # ⏱️ Parse/format de tempo e utilitários
-    ├── parser/
-    │   ├── lexer.js        # 🔤 Tokenizer
-    │   ├── parser.js       # 🌳 Construção da AST
-    │   └── evaluator.js    # 🧮 Avaliação da AST
-    ├── services/
-    │   └── effortCalculator.js  # 🧾 Lógica de cálculo
-    └── ui/
-        ├── hoursUi.js      # 📅 UI da aba Horas
-        ├── effortUi.js     # 📊 UI da aba Esforço
-        ├── testUi.js       # 🧪 UI da aba Testes
-        └── theme.js        # 🌓 Alternador de tema (claro/escuro)
+├── assets/
+│   ├── favicon.svg         # 🔖 Ícone do favicon
+│   ├── icon-192.png        # 📱 Ícone PWA 192×192
+│   └── icon-512.png        # 📱 Ícone PWA 512×512
+├── js/
+│   ├── main.js             # 🚀 Inicialização da aplicação + registro SW
+│   ├── utils/
+│   │   └── timeUtils.js    # ⏱️ Parse/format de tempo, dias úteis, máscara
+│   ├── parser/
+│   │   ├── lexer.js        # 🔤 Tokenizer
+│   │   ├── parser.js       # 🌳 Construção da AST
+│   │   └── evaluator.js    # 🧮 Avaliação da AST
+│   ├── services/
+│   │   └── effortCalculator.js  # 🧾 Lógica de cálculo de viabilidade
+│   ├── tests/
+│   │   └── suite.js        # 📋 Suíte de 26 testes unitários
+│   └── ui/
+│       ├── hoursUi.js      # 📅 UI da aba Calculadora de Horas
+│       ├── effortUi.js     # 📊 UI da aba Viabilidade de Prazo
+│       ├── dateDiffUi.js   # 📆 UI da aba Diferença entre Datas
+│       ├── testUi.js       # 🧪 UI da aba Testes Unitários
+│       └── theme.js        # 🌓 Alternador de tema (claro/escuro)
+└── .vscode/
+    └── launch.json         # 🔧 Configurações de debug (local)
 ```
 
 ---
@@ -118,7 +132,9 @@ A aplicação usa abas (tabs) com três seções principais:
 
 - ✏️ Para editar a UI, modifique arquivos em `js/ui/` e recarregue o navegador.
 - 🔍 Para entender o parser, veja `js/parser/lexer.js`, `parser.js` e `evaluator.js`.
-- 🧪 Execute `npm test` para rodar os testes em `test-cli.js`.
+- 🧪 Execute `npm test` para rodar os 26 testes em `test-cli.js`.
+- 📱 Teste o PWA: abra no Chrome, vá em "Adicionar à tela inicial" e teste o funcionamento offline.
+- 🗂️ Ícones PWA são gerados a partir de `assets/favicon.svg` com `rsvg-convert`.
 
 ---
 
