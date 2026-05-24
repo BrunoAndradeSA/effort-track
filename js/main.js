@@ -34,7 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 3. Inicializar as UIs correspondentes
+  // 3. Registrar Service Worker para PWA
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js");
+  }
+
+  // 4. Inicializar as UIs correspondentes
   initHoursUi();
   initEffortUi();
   initDateDiffUi();
