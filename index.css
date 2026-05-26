@@ -1414,6 +1414,7 @@ input[type="date"] {
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
   position: relative;
   overflow: hidden;
+  min-width: 0;
 }
 
 .project-card:hover {
@@ -1800,6 +1801,10 @@ input[type="date"] {
   
   .modal-content {
     padding: 1.5rem;
+  }
+
+  .updater-inputs {
+    grid-template-columns: 1fr;
   }
 }
 
