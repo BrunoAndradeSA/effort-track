@@ -61,18 +61,18 @@ export function calculateEffort(params) {
   const qaSlackDelay = convertHours(qaDiff, qtyQas, hoursPerQa);
 
   // 4. Calcular percentual de viabilidade
-  // Fórmula: (capacidade total / esforço total) * 100, limitada entre 0% e 100%
-  const totalCapacity = devCapacity + qaCapacity;
-  const totalEffort = estimatedDevHours + estimatedQaHours;
+  // Usa o gargalo (papel limitante) como base: dias necessários vs dias disponíveis
+  const devWorkDaysNeeded = devDailyCapacity > 0 ? estimatedDevHours / devDailyCapacity : 0;
+  const qaWorkDaysNeeded = qaDailyCapacity > 0 ? estimatedQaHours / qaDailyCapacity : 0;
+  const bottleneckDays = Math.max(devWorkDaysNeeded, qaWorkDaysNeeded);
 
   let viability = 100;
-  if (totalEffort > 0) {
-    viability = (totalCapacity / totalEffort) * 100;
-  } else if (totalCapacity === 0 && totalEffort === 0) {
+  if (bottleneckDays > 0 && workingDays > 0) {
+    viability = (workingDays / bottleneckDays) * 100;
+  } else if (bottleneckDays === 0 && estimatedDevHours === 0 && estimatedQaHours === 0) {
     viability = 0;
   }
-  
-  // Limitar entre 0% e 100%
+
   viability = Math.min(100, Math.max(0, viability));
 
   // Para folga/atraso global, usamos o papel limitante (o pior cenário)
@@ -113,10 +113,7 @@ export function calculateEffort(params) {
   }
 
   // 5. Calcular data prevista de conclusão (considerando o gargalo)
-  const devWorkDaysNeeded = devDailyCapacity > 0 ? estimatedDevHours / devDailyCapacity : 0;
-  const qaWorkDaysNeeded = qaDailyCapacity > 0 ? estimatedQaHours / qaDailyCapacity : 0;
-  const bottleneckDays = Math.ceil(Math.max(devWorkDaysNeeded, qaWorkDaysNeeded));
-  const completionDate = bottleneckDays > 0 ? addWorkingDays(startDate, bottleneckDays) : startDate;
+  const completionDate = bottleneckDays > 0 ? addWorkingDays(startDate, Math.ceil(bottleneckDays)) : startDate;
 
   return {
     workingDays,
