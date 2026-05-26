@@ -1911,7 +1911,7 @@ input[type="date"] {
 }
 
 /* ==========================================================================
-   SETTINGS TEXTAREA
+   SETTINGS TEXTAREA / BADGE CONTAINER
    ========================================================================== */
 .settings-textarea {
   width: 100%;
@@ -1923,13 +1923,78 @@ input[type="date"] {
   font-size: 0.9rem;
   font-weight: 500;
   font-family: var(--font-family-body);
-  resize: vertical;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.settings-textarea:focus {
+.settings-textarea:focus-within {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-light);
+}
+
+.badge-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: text;
+  min-height: 42px;
+  padding: 0.5rem 0.6rem;
+}
+
+.badge-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--accent-light);
+  color: var(--accent);
+  padding: 0.25rem 0.5rem;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.4;
+  animation: fadeIn 0.2s ease;
+  flex-shrink: 0;
+}
+
+.badge-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.75rem;
+  line-height: 1;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.badge-chip-remove:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.badge-text-input {
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
   outline: none;
+  flex: 1;
+  min-width: 150px;
+  padding: 0.2rem 0.3rem;
+  font-family: var(--font-family-body);
+}
+
+.badge-text-input::placeholder {
+  color: var(--text-secondary);
+  font-weight: 400;
+  opacity: 0.7;
 }
 
