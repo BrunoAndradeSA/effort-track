@@ -4,7 +4,8 @@ const DEFAULTS = {
   defaultProjectDuration: 30,
   defaultQtyDevs: 7,
   defaultQtyQas: 2,
-  defaultHoursPerDay: '07:45'
+  defaultHoursPerDay: '07:45',
+  stakeholderEmails: []
 };
 
 export function getSettings() {
