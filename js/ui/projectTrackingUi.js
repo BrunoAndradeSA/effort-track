@@ -2,6 +2,7 @@ import { getProjects, addProject, updateProject, deleteProject } from '../servic
 import { calculateProjectMetrics } from '../services/projectCalculations.js';
 import { maskTimeInput, parseTimeToMinutes, formatMinutesToTime } from '../utils/timeUtils.js';
 import { getSettings } from '../services/settingsStorage.js';
+import { getSettings } from '../services/settingsStorage.js';
 
 let _renderProjects = null;
 
@@ -33,6 +34,58 @@ export function initProjectTrackingUi() {
   const realizedFieldsGroup = document.getElementById('proj-realized-fields-group');
   const realizedDevInput = document.getElementById('proj-realized-dev-hours');
   const realizedQaInput = document.getElementById('proj-realized-qa-hours');
+
+  // Badge de e-mails
+  const projEmailContainer = document.getElementById('proj-stakeholder-emails');
+  const projEmailInput = document.getElementById('proj-email-input');
+
+  function createProjBadgeChip(email) {
+    const chip = document.createElement('span');
+    chip.className = 'badge-chip';
+    chip.textContent = email;
+    const remove = document.createElement('button');
+    remove.className = 'badge-chip-remove';
+    remove.type = 'button';
+    remove.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+    remove.addEventListener('click', (e) => { e.stopPropagation(); chip.remove(); });
+    chip.appendChild(remove);
+    projEmailContainer.insertBefore(chip, projEmailInput);
+  }
+
+  function renderProjEmails(emails) {
+    projEmailContainer.querySelectorAll('.badge-chip').forEach(el => el.remove());
+    emails.forEach(email => createProjBadgeChip(email));
+  }
+
+  function collectProjEmails() {
+    const chips = projEmailContainer.querySelectorAll('.badge-chip');
+    return Array.from(chips).map(c => c.firstChild.textContent.trim());
+  }
+
+  // Badge input events
+  projEmailInput.addEventListener('input', () => {
+    const semiIdx = projEmailInput.value.indexOf(';');
+    if (semiIdx === -1) return;
+    const parts = projEmailInput.value.split(';');
+    const last = parts.pop();
+    parts.forEach(p => { const t = p.trim(); if (t) createProjBadgeChip(t); });
+    projEmailInput.value = last;
+  });
+
+  projEmailInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const raw = projEmailInput.value.trim();
+      if (raw) { createProjBadgeChip(raw); projEmailInput.value = ''; }
+    }
+    if (e.key === 'Backspace' && projEmailInput.value === '') {
+      const chips = projEmailContainer.querySelectorAll('.badge-chip');
+      const last = chips[chips.length - 1];
+      if (last) last.remove();
+    }
+  });
+
+  projEmailContainer.addEventListener('click', () => projEmailInput.focus());
 
   let currentFilter = 'all';
   let editingProjectTitle = null; // null para criação, string para edição
@@ -390,6 +443,8 @@ export function initProjectTrackingUi() {
       realizedFieldsGroup.style.display = 'block';
       realizedDevInput.value = project.hoursDevRealized;
       realizedQaInput.value = project.hoursQaRealized;
+
+      renderProjEmails(project.stakeholderEmails || []);
     } else {
       // MODO CADASTRO
       modalTitle.textContent = 'Novo Projeto';
@@ -428,6 +483,8 @@ export function initProjectTrackingUi() {
       realizedFieldsGroup.style.display = 'none';
       realizedDevInput.value = 0;
       realizedQaInput.value = 0;
+
+      renderProjEmails(settings.stakeholderEmails || []);
     }
 
     // Resetar estilos de erro nos inputs
@@ -537,7 +594,8 @@ export function initProjectTrackingUi() {
       hoursPerQa,
       estimatedQaHours,
       hoursDevRealized,
-      hoursQaRealized
+      hoursQaRealized,
+      stakeholderEmails: collectProjEmails()
     };
 
     try {
