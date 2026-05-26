@@ -64,7 +64,23 @@
 
     <!-- NAVEGAÇÃO PRINCIPAL (ABAS) -->
     <nav class="navigation-bar" role="tablist">
-      <button class="tab-btn active" role="tab" aria-selected="true" data-target="hours-section" id="tab-hours">
+      <button class="tab-btn active" role="tab" aria-selected="true" data-target="effort-section" id="tab-effort">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+          <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+        </svg>
+        Viabilidade de Prazo
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-target="project-tracking-section" id="tab-project-tracking">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="9" rx="1"></rect>
+          <rect x="14" y="3" width="7" height="5" rx="1"></rect>
+          <rect x="14" y="12" width="7" height="9" rx="1"></rect>
+          <rect x="3" y="16" width="7" height="5" rx="1"></rect>
+        </svg>
+        Acompanhamento de Projetos
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-target="hours-section" id="tab-hours">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
           <line x1="9" y1="9" x2="15" y2="9"></line>
@@ -76,13 +92,6 @@
         </svg>
         Calculadora de Horas
       </button>
-      <button class="tab-btn" role="tab" aria-selected="false" data-target="effort-section" id="tab-effort">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
-          <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
-        </svg>
-        Viabilidade de Prazo
-      </button>
       <button class="tab-btn" role="tab" aria-selected="false" data-target="date-diff-section" id="tab-date-diff">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -91,15 +100,6 @@
           <line x1="3" y1="10" x2="21" y2="10"></line>
         </svg>
         Diferença entre Datas
-      </button>
-      <button class="tab-btn" role="tab" aria-selected="false" data-target="project-tracking-section" id="tab-project-tracking">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="3" width="7" height="9" rx="1"></rect>
-          <rect x="14" y="3" width="7" height="5" rx="1"></rect>
-          <rect x="14" y="12" width="7" height="9" rx="1"></rect>
-          <rect x="3" y="16" width="7" height="5" rx="1"></rect>
-        </svg>
-        Acompanhamento de Projetos
       </button>
       <button class="tab-btn" role="tab" aria-selected="false" data-target="tests-section" id="tab-tests">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -110,60 +110,8 @@
       </button>
     </nav>
 
-    <!-- 1. ABA CALCULADORA DE HORAS -->
-    <section id="hours-section" class="app-section active glass-panel" role="tabpanel" aria-labelledby="tab-hours">
-      <h2 class="section-title">Calculadora de Horas</h2>
-      <p class="section-subtitle">Realize cálculos matemáticos livremente combinando horas, minutos e números decimais.</p>
-      
-      <div class="calculator-container">
-        <!-- Campo central e botão de limpar -->
-        <div class="input-row">
-          <div class="calc-input-wrapper">
-            <input type="text" id="calc-input" class="main-calc-input" placeholder="Ex: (7:45 * 5) + 30h" aria-label="Digite a expressão de horas">
-          </div>
-          <button id="calc-clear" class="btn-clear" title="Limpar expressão">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3 6 5 6 21 6"></polyline>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-            </svg>
-            Limpar
-          </button>
-        </div>
-
-        <!-- Área de mensagens de validação / erros -->
-        <div id="calc-error" class="calc-error-box" role="alert">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-          <!-- Mensagem injetada via JS -->
-        </div>
-
-        <!-- Painel de Exibição do Resultado -->
-        <div class="calc-result-panel">
-          <div class="calc-result-label">Resultado Final (HH:mm)</div>
-          <div id="calc-result" class="calc-result-value">00:00</div>
-        </div>
-
-        <!-- Exemplos Rápidos -->
-        <div class="calc-examples-section">
-          <h3 class="examples-title">Exemplos para Testar:</h3>
-          <div class="calc-examples-grid">
-            <button class="calc-example-btn" data-expr="7:45 * 5">7:45 * 5</button>
-            <button class="calc-example-btn" data-expr="(7:45 * 5) + 30h">(7:45 * 5) + 30h</button>
-            <button class="calc-example-btn" data-expr="8h + 2:30">8h + 2:30</button>
-            <button class="calc-example-btn" data-expr="10h / 2">10h / 2</button>
-            <button class="calc-example-btn" data-expr="12h - 1:30">12h - 1:30</button>
-            <button class="calc-example-btn" data-expr="(2h + 30m) * 2">(2h + 30m) * 2</button>
-            <button class="calc-example-btn" data-expr="7:45 X 5">7:45 X 5</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 2. ABA CALCULADORA DE ESFORÇO (VIABILIDADE) -->
-    <section id="effort-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-effort">
+    <!-- 1. ABA VIABILIDADE DE PRAZO -->
+    <section id="effort-section" class="app-section active glass-panel" role="tabpanel" aria-labelledby="tab-effort">
       <h2 class="section-title">Cálculo de Viabilidade de Prazo</h2>
       <p class="section-subtitle">Estime a capacidade de desenvolvimento e garantia de qualidade (QA) para determinar a viabilidade de entrega de um prazo.</p>
 
@@ -295,7 +243,91 @@
       </div>
     </section>
 
-    <!-- 3. ABA DIFERENÇA ENTRE DATAS -->
+    <!-- 2. ABA ACOMPANHAMENTO DE PROJETOS -->
+    <section id="project-tracking-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-project-tracking">
+      <div class="project-tracking-header">
+        <div>
+          <h2 class="section-title">Acompanhamento de Projetos</h2>
+          <p class="section-subtitle">Acompanhe a evolução de horas, progresso real, progresso planejado e a chance de conclusão dos projetos no prazo.</p>
+        </div>
+        <button id="new-project-btn" class="btn-run-tests">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Novo Projeto
+        </button>
+      </div>
+
+      <!-- Barra de Filtros -->
+      <div class="project-filters-bar">
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-filter="all">Todos</button>
+          <button class="filter-btn" data-filter="ongoing">Em andamento</button>
+          <button class="filter-btn" data-filter="completed">Concluídos</button>
+          <button class="filter-btn" data-filter="at-risk">Em risco</button>
+        </div>
+      </div>
+
+      <!-- Grid de Projetos -->
+      <div id="project-list-grid" class="projects-grid">
+        <!-- Injetado dinamicamente via JS -->
+      </div>
+    </section>
+
+    <!-- 3. ABA CALCULADORA DE HORAS -->
+    <section id="hours-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-hours">
+      <h2 class="section-title">Calculadora de Horas</h2>
+      <p class="section-subtitle">Realize cálculos matemáticos livremente combinando horas, minutos e números decimais.</p>
+      
+      <div class="calculator-container">
+        <!-- Campo central e botão de limpar -->
+        <div class="input-row">
+          <div class="calc-input-wrapper">
+            <input type="text" id="calc-input" class="main-calc-input" placeholder="Ex: (7:45 * 5) + 30h" aria-label="Digite a expressão de horas">
+          </div>
+          <button id="calc-clear" class="btn-clear" title="Limpar expressão">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            Limpar
+          </button>
+        </div>
+
+        <!-- Área de mensagens de validação / erros -->
+        <div id="calc-error" class="calc-error-box" role="alert">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <!-- Mensagem injetada via JS -->
+        </div>
+
+        <!-- Painel de Exibição do Resultado -->
+        <div class="calc-result-panel">
+          <div class="calc-result-label">Resultado Final (HH:mm)</div>
+          <div id="calc-result" class="calc-result-value">00:00</div>
+        </div>
+
+        <!-- Exemplos Rápidos -->
+        <div class="calc-examples-section">
+          <h3 class="examples-title">Exemplos para Testar:</h3>
+          <div class="calc-examples-grid">
+            <button class="calc-example-btn" data-expr="7:45 * 5">7:45 * 5</button>
+            <button class="calc-example-btn" data-expr="(7:45 * 5) + 30h">(7:45 * 5) + 30h</button>
+            <button class="calc-example-btn" data-expr="8h + 2:30">8h + 2:30</button>
+            <button class="calc-example-btn" data-expr="10h / 2">10h / 2</button>
+            <button class="calc-example-btn" data-expr="12h - 1:30">12h - 1:30</button>
+            <button class="calc-example-btn" data-expr="(2h + 30m) * 2">(2h + 30m) * 2</button>
+            <button class="calc-example-btn" data-expr="7:45 X 5">7:45 X 5</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. ABA DIFERENÇA ENTRE DATAS -->
     <section id="date-diff-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-date-diff">
       <h2 class="section-title">Diferença entre Datas</h2>
       <p class="section-subtitle">Calcule a quantidade de dias corridos, dias úteis e horas úteis entre duas datas.</p>
@@ -353,39 +385,7 @@
       </div>
     </section>
 
-    <!-- 5. ABA ACOMPANHAMENTO DE PROJETOS -->
-    <section id="project-tracking-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-project-tracking">
-      <div class="project-tracking-header">
-        <div>
-          <h2 class="section-title">Acompanhamento de Projetos</h2>
-          <p class="section-subtitle">Acompanhe a evolução de horas, progresso real, progresso planejado e a chance de conclusão dos projetos no prazo.</p>
-        </div>
-        <button id="new-project-btn" class="btn-run-tests">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          Novo Projeto
-        </button>
-      </div>
-
-      <!-- Barra de Filtros -->
-      <div class="project-filters-bar">
-        <div class="filter-buttons">
-          <button class="filter-btn active" data-filter="all">Todos</button>
-          <button class="filter-btn" data-filter="ongoing">Em andamento</button>
-          <button class="filter-btn" data-filter="completed">Concluídos</button>
-          <button class="filter-btn" data-filter="at-risk">Em risco</button>
-        </div>
-      </div>
-
-      <!-- Grid de Projetos -->
-      <div id="project-list-grid" class="projects-grid">
-        <!-- Injetado dinamicamente via JS -->
-      </div>
-    </section>
-
-    <!-- 4. ABA TESTES UNITÁRIOS -->
+    <!-- 5. ABA TESTES UNITÁRIOS -->
     <section id="tests-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-tests">
       <div class="tests-header-row">
         <div>
