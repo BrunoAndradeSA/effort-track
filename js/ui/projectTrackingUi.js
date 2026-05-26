@@ -1,6 +1,7 @@
 import { getProjects, addProject, updateProject, deleteProject } from '../services/projectStorage.js';
 import { calculateProjectMetrics } from '../services/projectCalculations.js';
 import { maskTimeInput, parseTimeToMinutes, formatMinutesToTime } from '../utils/timeUtils.js';
+import { getSettings } from '../services/settingsStorage.js';
 
 let _renderProjects = null;
 
@@ -397,10 +398,10 @@ export function initProjectTrackingUi() {
       titleInput.value = '';
       titleInput.disabled = false;
 
-      // Datas padrão: hoje e 2 semanas depois
+      const settings = getSettings();
       const today = new Date();
       const end = new Date();
-      end.setDate(today.getDate() + 14);
+      end.setDate(today.getDate() + settings.defaultProjectDuration);
       
       const fmtDate = (d) => {
         const y = d.getFullYear();
@@ -412,12 +413,12 @@ export function initProjectTrackingUi() {
       startDateInput.value = fmtDate(today);
       endDateInput.value = fmtDate(end);
       
-      qtyDevsInput.value = 3;
-      hoursPerDevInput.value = '08:00';
+      qtyDevsInput.value = settings.defaultQtyDevs;
+      hoursPerDevInput.value = settings.defaultHoursPerDay;
       estimatedDevInput.value = 180;
       
-      qtyQasInput.value = 1;
-      hoursPerQaInput.value = '06:00';
+      qtyQasInput.value = settings.defaultQtyQas;
+      hoursPerQaInput.value = settings.defaultHoursPerDay;
       estimatedQaInput.value = 40;
       
       // Ocultar checkbox Concluído e inputs de horas realizadas no cadastro inicial

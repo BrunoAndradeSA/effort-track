@@ -2,6 +2,7 @@ import { calculateEffort } from "../services/effortCalculator.js";
 import { parseTimeToMinutes, maskTimeInput } from "../utils/timeUtils.js";
 import { addProject } from "../services/projectStorage.js";
 import { refreshProjectList } from "./projectTrackingUi.js";
+import { getSettings } from "../services/settingsStorage.js";
 
 function showNamePrompt() {
   return new Promise((resolve) => {
@@ -239,10 +240,11 @@ export function initEffortUi() {
   form.addEventListener("input", updateCalculation);
   form.addEventListener("change", updateCalculation);
 
-  // Definir datas iniciais padrão para demonstração
+  // Definir valores padrão a partir das configurações
+  const settings = getSettings();
   const today = new Date();
   const end = new Date();
-  end.setDate(today.getDate() + 14); // Duas semanas depois
+  end.setDate(today.getDate() + settings.defaultProjectDuration);
 
   const formatDateString = (d) => {
     const year = d.getFullYear();
@@ -253,6 +255,24 @@ export function initEffortUi() {
 
   document.getElementById("start-date").value = formatDateString(today);
   document.getElementById("end-date").value = formatDateString(end);
+
+  document.getElementById("qty-devs").value = settings.defaultQtyDevs;
+  document.getElementById("hours-per-dev").value = settings.defaultHoursPerDay;
+  document.getElementById("qty-qas").value = settings.defaultQtyQas;
+  document.getElementById("hours-per-qa").value = settings.defaultHoursPerDay;
+
+  // Reaplicar defaults quando configurações mudarem
+  window.addEventListener("settings-changed", () => {
+    const s = getSettings();
+    const newEnd = new Date();
+    newEnd.setDate(today.getDate() + s.defaultProjectDuration);
+    document.getElementById("end-date").value = formatDateString(newEnd);
+    document.getElementById("qty-devs").value = s.defaultQtyDevs;
+    document.getElementById("hours-per-dev").value = s.defaultHoursPerDay;
+    document.getElementById("qty-qas").value = s.defaultQtyQas;
+    document.getElementById("hours-per-qa").value = s.defaultHoursPerDay;
+    updateCalculation();
+  });
 
   // Executar primeiro cálculo inicial
   updateCalculation();

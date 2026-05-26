@@ -4,6 +4,7 @@ import { initEffortUi } from "./ui/effortUi.js";
 import { initDateDiffUi } from "./ui/dateDiffUi.js";
 import { initTestUi } from "./ui/testUi.js";
 import { initProjectTrackingUi } from "./ui/projectTrackingUi.js";
+import { initSettingsUi } from "./ui/settingsUi.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   // 1. Inicializar Tema (Claro/Escuro)
@@ -61,4 +62,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initDateDiffUi();
   initProjectTrackingUi();
   initTestUi();
+  initSettingsUi();
 });
