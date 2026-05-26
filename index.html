@@ -551,12 +551,8 @@
         </div>
         <div class="form-section-title">Notificações</div>
         <div class="form-group">
-          <label>E-mails das partes interessadas</label>
-          <div class="badge-input-container" id="settings-stakeholder-emails">
-            <div class="badge-input-inner">
-              <input type="text" class="badge-text-input" id="stakeholder-email-input" placeholder="Digite o email e ; para adicionar" autocomplete="off">
-            </div>
-          </div>
+          <label for="settings-stakeholder-emails">E-mails das partes interessadas (separe por ; ou linha)</label>
+          <textarea id="settings-stakeholder-emails" class="settings-textarea" placeholder="email1@exemplo.com; email2@exemplo.com" rows="4"></textarea>
         </div>
         <div class="modal-footer" style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
           <button type="button" id="settings-cancel-btn" class="btn-clear" style="margin: 0; padding: 0.75rem 1.5rem;">Cancelar</button>
