@@ -1,4 +1,4 @@
-const CACHE = "effort-track-v1"; // 🔁 Incremente a cada deploy (v1, v2, v3...)
+const CACHE = "effort-track-v2"; // 🔁 Incremente a cada deploy (v1, v2, v3...)
 
 const PRECACHE = [
   "./",
@@ -13,9 +13,12 @@ const PRECACHE = [
   "./js/parser/parser.js",
   "./js/parser/evaluator.js",
   "./js/services/effortCalculator.js",
+  "./js/services/projectStorage.js",
+  "./js/services/projectCalculations.js",
   "./js/ui/hoursUi.js",
   "./js/ui/effortUi.js",
   "./js/ui/dateDiffUi.js",
+  "./js/ui/projectTrackingUi.js",
   "./js/ui/testUi.js",
   "./js/ui/theme.js"
 ];

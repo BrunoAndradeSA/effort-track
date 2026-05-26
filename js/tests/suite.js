@@ -3,6 +3,7 @@ import { tokenize, TokenType } from "../parser/lexer.js";
 import { Parser } from "../parser/parser.js";
 import { calculateExpression } from "../parser/evaluator.js";
 import { calculateEffort } from "../services/effortCalculator.js";
+import { calculateProjectMetrics } from "../services/projectCalculations.js";
 
 // Helper de asserção simples
 function assertEqual(actual, expected, message = "") {
@@ -75,6 +76,24 @@ export const testSuite = [
       assertEqual(formatMinutesToTime(0), "00:00");
     }
   },
+  {
+    name: "Deve retornar 00:00 para NaN ou Infinity em formatMinutesToTime",
+    category: "conversao",
+    run() {
+      assertEqual(formatMinutesToTime(NaN), "00:00");
+      assertEqual(formatMinutesToTime(Infinity), "00:00");
+      assertEqual(formatMinutesToTime(-Infinity), "00:00");
+    }
+  },
+  {
+    name: "Deve converter horas decimais corretamente",
+    category: "conversao",
+    run() {
+      assertEqual(parseTimeToMinutes("0.5h"), 30);
+      assertEqual(parseTimeToMinutes("2.25h"), 135);
+      assertEqual(parseTimeToMinutes("0.1h"), 6);
+    }
+  },
 
   // --- TOKENIZER (LEXER) ---
   {
@@ -110,6 +129,14 @@ export const testSuite = [
     run() {
       assertThrows(() => tokenize("7:45 @ 5"), "Caractere inesperado");
       assertThrows(() => tokenize("2h & 3m"), "Caractere inesperado");
+    }
+  },
+  {
+    name: "Deve lançar erro ao tokenizar string vazia",
+    category: "tokenizer",
+    run() {
+      assertThrows(() => calculateExpression(""), "vazia");
+      assertThrows(() => calculateExpression("   "), "vazia");
     }
   },
 
@@ -183,6 +210,21 @@ export const testSuite = [
       assertEqual(calculateExpression("5h - -2h"), 420); // 300 - (-120) = 420
     }
   },
+  {
+    name: "Deve calcular expressões com resultado negativo",
+    category: "calculos",
+    run() {
+      assertEqual(calculateExpression("2h - 5h"), -180);
+    }
+  },
+  {
+    name: "Deve calcular expressões com horas decimais",
+    category: "calculos",
+    run() {
+      assertEqual(calculateExpression("1.5h + 0.5h"), 120);
+      assertEqual(calculateExpression("1.5h * 2"), 180);
+    }
+  },
 
   // --- VALIDAÇÕES DE ERRO ---
   {
@@ -228,6 +270,68 @@ export const testSuite = [
 
       // completionDate: 8 dias úteis de 2026-06-01 (bottleneck DEV 7.5 → ceil 8)
       assertEqual(res.completionDate, "2026-06-11");
+    }
+  },
+  {
+    name: "Deve detectar projeto inviável quando capacidade < estimativa",
+    category: "esforco",
+    run() {
+      const res = calculateEffort({
+        startDate: "2026-06-01",
+        endDate: "2026-06-05",
+        qtyDevs: 1,
+        hoursPerDev: 4,
+        qtyQas: 1,
+        hoursPerQa: 4,
+        estimatedDevHours: 40,
+        estimatedQaHours: 20
+      });
+      assertEqual(res.workingDays, 5);
+      assertEqual(res.devCapacity, 20);
+      assertEqual(res.qaCapacity, 20);
+      assertEqual(res.devCanComplete, false);
+      assertEqual(res.projectCanComplete, false);
+      assertEqual(res.viability < 100, true);
+    }
+  },
+  {
+    name: "Deve identificar gargalo QA quando QA é o limitante",
+    category: "esforco",
+    run() {
+      const res = calculateEffort({
+        startDate: "2026-06-01",
+        endDate: "2026-06-12",
+        qtyDevs: 3,
+        hoursPerDev: 8,
+        qtyQas: 1,
+        hoursPerQa: 4,
+        estimatedDevHours: 100,
+        estimatedQaHours: 60
+      });
+      // DEV: 3*8=24h/dia * 10 = 240h → folga de 140h
+      // QA: 1*4=4h/dia * 10 = 40h → déficit de 20h
+      assertEqual(res.devCanComplete, true);
+      assertEqual(res.qaCanComplete, false);
+      assertEqual(res.projectCanComplete, false);
+    }
+  },
+  {
+    name: "Deve lidar com equipe e esforço zerados",
+    category: "esforco",
+    run() {
+      const res = calculateEffort({
+        startDate: "2026-06-01",
+        endDate: "2026-06-05",
+        qtyDevs: 0,
+        hoursPerDev: 0,
+        qtyQas: 0,
+        hoursPerQa: 0,
+        estimatedDevHours: 0,
+        estimatedQaHours: 0
+      });
+      assertEqual(res.workingDays, 5);
+      assertEqual(res.viability, 0);
+      assertEqual(res.projectCanComplete, true); // sem esforço, sempre viável
     }
   },
 
@@ -306,5 +410,189 @@ export const testSuite = [
     run() {
       assertEqual(addWorkingDays("2026-06-01", -5), "2026-06-01");
     }
+  },
+  
+  // --- ACOMPANHAMENTO DE PROJETOS ---
+  {
+    name: "Deve calcular métricas básicas de um projeto novo sem progresso",
+    category: "acompanhamento_projetos",
+    run() {
+      const project = {
+        title: "Projeto A",
+        startDate: "2026-06-01", // Segunda
+        endDate: "2026-06-05",   // Sexta (5 dias úteis)
+        completed: false,
+        qtyDevs: 2,
+        hoursPerDev: 8,
+        qtyQas: 1,
+        hoursPerQa: 6,
+        estimatedDevHours: 80,
+        estimatedQaHours: 30,
+        hoursDevRealized: 0,
+        hoursQaRealized: 0
+      };
+      
+      const metrics = calculateProjectMetrics(project, "2026-06-01");
+      assertEqual(metrics.totalWorkingDays, 5);
+      assertEqual(metrics.elapsedWorkingDays, 1); // No primeiro dia
+      assertEqual(metrics.remainingWorkingDays, 4);
+      assertEqual(metrics.devDailyCapacity, 16);
+      assertEqual(metrics.qaDailyCapacity, 6);
+      assertEqual(metrics.overallProgressReal, 0);
+      assertEqual(metrics.visualStatus, "healthy");
+    }
+  },
+  {
+    name: "Deve calcular métricas corretas para projeto concluído",
+    category: "acompanhamento_projetos",
+    run() {
+      const project = {
+        title: "Projeto B",
+        startDate: "2026-06-01",
+        endDate: "2026-06-05",
+        completed: true,
+        qtyDevs: 2,
+        hoursPerDev: 8,
+        qtyQas: 1,
+        hoursPerQa: 6,
+        estimatedDevHours: 80,
+        estimatedQaHours: 30,
+        hoursDevRealized: 80,
+        hoursQaRealized: 30
+      };
+      
+      const metrics = calculateProjectMetrics(project, "2026-06-05");
+      assertEqual(metrics.overallProgressReal, 100);
+      assertEqual(metrics.successChance, 100);
+      assertEqual(metrics.visualStatus, "completed");
+    }
+  },
+  {
+    name: "Deve penalizar chance de sucesso para projeto atrasado e sem capacidade",
+    category: "acompanhamento_projetos",
+    run() {
+      const project = {
+        title: "Projeto C",
+        startDate: "2026-06-01",
+        endDate: "2026-06-05", // 5 dias úteis
+        completed: false,
+        qtyDevs: 1,
+        hoursPerDev: 8, // 8h por dia total
+        qtyQas: 1,
+        hoursPerQa: 4, // 4h por dia total
+        estimatedDevHours: 40,
+        estimatedQaHours: 20,
+        hoursDevRealized: 8, // Deveria ser 32 (dia 4)
+        hoursQaRealized: 4  // Deveria ser 16
+      };
+      
+      // Estamos no dia 4/5 (quinta-feira)
+      const metrics = calculateProjectMetrics(project, "2026-06-04");
+      // Falta 1 dia útil (sexta-feira).
+      // Horas DEV restantes: 32h. QA restantes: 16h.
+      // Capacidade DEV restante: 1 dia * 8h = 8h. Capacidade QA restante: 1 dia * 4h = 4h.
+      // minCapRatio = min(8/32, 4/16) = 0.25.
+      assertEqual(metrics.remainingWorkingDays, 1);
+      assertEqual(metrics.successChance < 30, true); // Muito abaixo da capacidade física
+      assertEqual(metrics.visualStatus, "danger");
+    }
+  },
+  {
+    name: "Deve retornar progresso real zero para projeto antes da data de início",
+    category: "acompanhamento_projetos",
+    run() {
+      const project = {
+        title: "Projeto D",
+        startDate: "2026-06-08",
+        endDate: "2026-06-12",
+        completed: false,
+        qtyDevs: 2,
+        hoursPerDev: 8,
+        qtyQas: 1,
+        hoursPerQa: 6,
+        estimatedDevHours: 80,
+        estimatedQaHours: 30,
+        hoursDevRealized: 0,
+        hoursQaRealized: 0
+      };
+      // Hoje é anterior ao início do projeto
+      const metrics = calculateProjectMetrics(project, "2026-06-01");
+      assertEqual(metrics.elapsedWorkingDays, 0);
+      assertEqual(metrics.overallProgressReal, 0);
+      assertEqual(metrics.projectedCompletionDate, "2026-06-15");
+    }
+  },
+  {
+    name: "Deve zerar chance de sucesso quando prazo expirou sem conclusão",
+    category: "acompanhamento_projetos",
+    run() {
+      const project = {
+        title: "Projeto E",
+        startDate: "2026-06-01",
+        endDate: "2026-06-05",
+        completed: false,
+        qtyDevs: 2,
+        hoursPerDev: 8,
+        qtyQas: 1,
+        hoursPerQa: 6,
+        estimatedDevHours: 80,
+        estimatedQaHours: 30,
+        hoursDevRealized: 40,
+        hoursQaRealized: 15
+      };
+      // Hoje é muito depois do prazo final e projeto não foi concluído
+      const metrics = calculateProjectMetrics(project, "2026-06-20");
+      assertEqual(metrics.successChance, 0);
+      assertEqual(metrics.visualStatus, "danger");
+    }
+  },
+  {
+    name: "Deve retornar chance 100 quando horas realizadas superam estimadas",
+    category: "acompanhamento_projetos",
+    run() {
+      const project = {
+        title: "Projeto F",
+        startDate: "2026-06-01",
+        endDate: "2026-06-05",
+        completed: false,
+        qtyDevs: 2,
+        hoursPerDev: 8,
+        qtyQas: 1,
+        hoursPerQa: 6,
+        estimatedDevHours: 80,
+        estimatedQaHours: 30,
+        hoursDevRealized: 85,
+        hoursQaRealized: 35
+      };
+      const metrics = calculateProjectMetrics(project, "2026-06-03");
+      assertEqual(metrics.successChance, 100);
+    }
+  },
+  {
+    name: "Deve calcular métricas para projeto com apenas DEV (sem QA)",
+    category: "acompanhamento_projetos",
+    run() {
+      const project = {
+        title: "Projeto G",
+        startDate: "2026-06-01",
+        endDate: "2026-06-05",
+        completed: false,
+        qtyDevs: 3,
+        hoursPerDev: 8,
+        qtyQas: 0,
+        hoursPerQa: 0,
+        estimatedDevHours: 100,
+        estimatedQaHours: 0,
+        hoursDevRealized: 50,
+        hoursQaRealized: 0
+      };
+      const metrics = calculateProjectMetrics(project, "2026-06-03");
+      assertEqual(metrics.totalDailyCapacity, 24);
+      assertEqual(metrics.qaDailyCapacity, 0);
+      assertEqual(metrics.bottleneckRemainingDays, 3); // 50h restantes / 24h dia = 2.08 → ceil 3
+      assertEqual(metrics.overallProgressReal, 50);
+      assertEqual(metrics.visualStatus, "warning");
+    }
   }
 ];
+

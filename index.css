@@ -153,7 +153,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 2rem;
-  max-width: 1200px;
+  max-width: 1400px;
   width: 100%;
   margin: 0 auto;
 }
@@ -222,7 +222,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 
 .app-main {
   flex: 1;
-  max-width: 1200px;
+  max-width: 1400px;
   width: 100%;
   margin: 0 auto;
   padding: 0 2rem 3rem;
@@ -246,14 +246,21 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   box-shadow: var(--glass-shadow);
   width: 100%;
   gap: 0.5rem;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  scrollbar-width: none;
+}
+
+.navigation-bar::-webkit-scrollbar {
+  display: none;
 }
 
 .tab-btn {
   background: transparent;
   border: none;
   color: var(--text-secondary);
-  padding: 0.8rem 1.5rem;
-  font-size: 0.95rem;
+  padding: 0.8rem 1.2rem;
+  font-size: 0.9rem;
   font-weight: 600;
   font-family: var(--font-family-title);
   border-radius: var(--radius-sm);
@@ -262,6 +269,8 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   align-items: center;
   gap: 0.5rem;
   transition: all var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .tab-btn:hover {
@@ -1029,7 +1038,7 @@ input[type="date"] {
   color: var(--text-secondary);
   font-size: 0.85rem;
   border-top: 1px solid var(--border-color);
-  max-width: 1200px;
+  max-width: 1400px;
   width: 100%;
   margin: auto auto 0 auto;
 }
@@ -1326,7 +1335,7 @@ input[type="date"] {
     font-size: 0.9rem;
   }
 
-  .role-status-card {
+    .role-status-card {
     padding: 1rem;
   }
 
@@ -1334,3 +1343,541 @@ input[type="date"] {
     font-size: 1.2rem;
   }
 }
+
+/* ==========================================================================
+   ACOMPANHAMENTO DE PROJETOS (TABS, CARDS, MODAL & ESTILOS)
+   ========================================================================== */
+
+.project-tracking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.project-filters-bar {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background: var(--accent-light);
+  border: 1px solid transparent;
+  color: var(--accent);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.filter-btn:hover {
+  background: var(--accent);
+  color: white;
+}
+
+.filter-btn.active {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 4px 12px hsla(250, 75%, 56%, 0.25);
+}
+
+/* Grid de Projetos */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* Card de Projeto */
+.project-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glass-shadow);
+}
+
+/* Status do Card */
+.project-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--accent);
+  transition: background-color var(--transition-normal);
+}
+
+.project-card.card-healthy::before {
+  background-color: var(--success);
+}
+
+.project-card.card-warning::before {
+  background-color: var(--warning);
+}
+
+.project-card.card-danger::before {
+  background-color: var(--danger);
+}
+
+.project-card.card-completed::before {
+  background-color: var(--text-secondary);
+}
+
+/* Card Cabeçalho */
+.project-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.project-card-title-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.project-card-title {
+  font-family: var(--font-family-title);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+  transition: color var(--transition-fast);
+}
+
+.project-card-dates {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.project-card-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.project-card-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.project-card-btn:hover {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.project-card-btn.btn-delete-proj:hover {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.healthy {
+  background-color: var(--success-bg);
+  color: var(--success);
+}
+
+.status-badge.warning {
+  background-color: var(--warning-bg);
+  color: var(--warning);
+}
+
+.status-badge.danger {
+  background-color: var(--danger-bg);
+  color: var(--danger);
+}
+
+.status-badge.completed {
+  background-color: var(--border-color);
+  color: var(--text-secondary);
+}
+
+/* Progress Section */
+.project-progress-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.progress-row-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.progress-label-real {
+  color: var(--text-primary);
+}
+
+.progress-label-expected {
+  color: var(--text-secondary);
+}
+
+.progress-bar-thin {
+  height: 6px;
+  background: var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill-thin {
+  height: 100%;
+  border-radius: 10px;
+  transition: width var(--transition-normal);
+}
+
+.progress-fill-expected {
+  background: var(--accent);
+}
+
+/* Grid de Informações */
+.project-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  background: var(--accent-light);
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.info-item-label {
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.info-item-value {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Painel de Atualização Diária */
+.project-daily-updater {
+  border-top: 1px dashed var(--border-color);
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.updater-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.updater-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.updater-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.updater-input-group label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.updater-input-field {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  width: 100%;
+  transition: border-color var(--transition-fast);
+}
+
+.updater-input-field:focus {
+  border-color: var(--accent);
+  outline: none;
+  background: var(--bg-primary);
+}
+
+/* Estado Concluído do Card */
+.project-card.card-completed {
+  opacity: 0.8;
+}
+
+.project-card.card-completed .project-card-title {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+}
+
+.project-card.card-completed .project-info-grid {
+  background: var(--border-color);
+}
+
+/* Modais */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: none;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  padding: 2rem 1rem;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.3);
+  max-width: 700px;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  position: relative;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.75rem;
+}
+
+.modal-header h3 {
+  font-family: var(--font-family-title);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.btn-icon-close {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.btn-icon-close:hover {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.form-section-divider {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent);
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.25rem;
+}
+
+.form-grid-3cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.form-group-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsividade Mobile para Projetos */
+@media (max-width: 600px) {
+  .project-tracking-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .project-tracking-header button {
+    width: 100%;
+  }
+
+  .form-grid-3cols {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .modal-content {
+    padding: 1.5rem;
+  }
+}
+
+/* Confirm Dialog */
+.confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+}
+
+.confirm-overlay.active {
+  opacity: 1;
+}
+
+.confirm-dialog {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.confirm-message {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.confirm-cancel-btn,
+.confirm-ok-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), opacity var(--transition-fast);
+  border: none;
+}
+
+.confirm-cancel-btn {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.confirm-cancel-btn:hover {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.confirm-ok-btn {
+  background: var(--danger, #e74c3c);
+  color: #fff;
+}
+
+.confirm-ok-btn:hover {
+  opacity: 0.85;
+}
+

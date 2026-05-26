@@ -83,6 +83,15 @@
         </svg>
         Diferença entre Datas
       </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-target="project-tracking-section" id="tab-project-tracking">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="9" rx="1"></rect>
+          <rect x="14" y="3" width="7" height="5" rx="1"></rect>
+          <rect x="14" y="12" width="7" height="9" rx="1"></rect>
+          <rect x="3" y="16" width="7" height="5" rx="1"></rect>
+        </svg>
+        Acompanhamento de Projetos
+      </button>
       <button class="tab-btn" role="tab" aria-selected="false" data-target="tests-section" id="tab-tests">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="9 11 12 14 22 4"></polyline>
@@ -328,6 +337,38 @@
       </div>
     </section>
 
+    <!-- 5. ABA ACOMPANHAMENTO DE PROJETOS -->
+    <section id="project-tracking-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-project-tracking">
+      <div class="project-tracking-header">
+        <div>
+          <h2 class="section-title">Acompanhamento de Projetos</h2>
+          <p class="section-subtitle">Acompanhe a evolução de horas, progresso real, progresso planejado e a chance de conclusão dos projetos no prazo.</p>
+        </div>
+        <button id="new-project-btn" class="btn-run-tests">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Novo Projeto
+        </button>
+      </div>
+
+      <!-- Barra de Filtros -->
+      <div class="project-filters-bar">
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-filter="all">Todos</button>
+          <button class="filter-btn" data-filter="ongoing">Em andamento</button>
+          <button class="filter-btn" data-filter="completed">Concluídos</button>
+          <button class="filter-btn" data-filter="at-risk">Em risco</button>
+        </div>
+      </div>
+
+      <!-- Grid de Projetos -->
+      <div id="project-list-grid" class="projects-grid">
+        <!-- Injetado dinamicamente via JS -->
+      </div>
+    </section>
+
     <!-- 4. ABA TESTES UNITÁRIOS -->
     <section id="tests-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-tests">
       <div class="tests-header-row">
@@ -362,6 +403,103 @@
   <footer class="app-footer">
     <p>Effort Track &copy; 2026. Desenvolvido por <a href="https://github.com/BrunoAndradeSA" target="_blank" rel="noopener noreferrer">BrunoAndradeSA</a>.</p>
   </footer>
+
+  <!-- MODAL DE CADASTRO / EDIÇÃO DE PROJETO -->
+  <div id="project-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-content glass-panel">
+      <div class="modal-header">
+        <h3 id="modal-title">Novo Projeto</h3>
+        <button id="modal-close-btn" class="btn-icon-close" aria-label="Fechar modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <form id="project-form">
+        <!-- Título -->
+        <div class="form-group" style="margin-bottom: 0.75rem;">
+          <label for="proj-title">Título do Projeto</label>
+          <input type="text" id="proj-title" placeholder="Ex: App de Finanças" required>
+        </div>
+
+        <!-- Datas -->
+        <div class="form-grid-2cols">
+          <div class="form-group">
+            <label for="proj-start-date">Data de Início</label>
+            <input type="date" id="proj-start-date" required>
+          </div>
+          <div class="form-group">
+            <label for="proj-end-date">Data de Fim Prevista</label>
+            <input type="date" id="proj-end-date" required>
+          </div>
+        </div>
+
+        <!-- Checkbox Concluído -->
+        <div class="form-group-checkbox" id="proj-completed-group" style="margin-top: 1rem; display: none;">
+          <label class="checkbox-container" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; user-select: none;">
+            <input type="checkbox" id="proj-completed">
+            Projeto Concluído
+          </label>
+        </div>
+
+        <!-- Equipe de DEV -->
+        <div class="form-section-title" style="margin-top: 1.5rem; margin-bottom: 0.75rem;">Equipe de Desenvolvimento</div>
+        <div class="form-grid-3cols" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
+          <div class="form-group">
+            <label for="proj-qty-devs">DEVs</label>
+            <input type="number" id="proj-qty-devs" min="1" placeholder="Ex: 3" required>
+          </div>
+          <div class="form-group">
+            <label for="proj-hours-per-dev">Horas/Dia</label>
+            <input type="text" id="proj-hours-per-dev" placeholder="Ex: 08:00" required>
+          </div>
+          <div class="form-group">
+            <label for="proj-estimated-dev-hours">Estimativa (horas)</label>
+            <input type="number" id="proj-estimated-dev-hours" min="1" placeholder="Ex: 240" required>
+          </div>
+        </div>
+
+        <!-- Equipe de QA -->
+        <div class="form-section-title" style="margin-top: 1.5rem; margin-bottom: 0.75rem;">Equipe de QA</div>
+        <div class="form-grid-3cols" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
+          <div class="form-group">
+            <label for="proj-qty-qas">QAs</label>
+            <input type="number" id="proj-qty-qas" min="1" placeholder="Ex: 1" required>
+          </div>
+          <div class="form-group">
+            <label for="proj-hours-per-qa">Horas/Dia</label>
+            <input type="text" id="proj-hours-per-qa" placeholder="Ex: 06:00" required>
+          </div>
+          <div class="form-group">
+            <label for="proj-estimated-qa-hours">Estimativa (horas)</label>
+            <input type="number" id="proj-estimated-qa-hours" min="1" placeholder="Ex: 60" required>
+          </div>
+        </div>
+
+        <!-- Horas Realizadas (Oculto no cadastro de novo projeto, exibido ao editar) -->
+        <div id="proj-realized-fields-group" style="display: none;">
+          <div class="form-section-title" style="margin-top: 1.5rem; margin-bottom: 0.75rem;">Horas Realizadas</div>
+          <div class="form-grid-2cols">
+            <div class="form-group">
+              <label for="proj-realized-dev-hours">Horas DEV Realizadas</label>
+              <input type="number" id="proj-realized-dev-hours" min="0" placeholder="Ex: 0">
+            </div>
+            <div class="form-group">
+              <label for="proj-realized-qa-hours">Horas QA Realizadas</label>
+              <input type="number" id="proj-realized-qa-hours" min="0" placeholder="Ex: 0">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" id="modal-cancel-btn" class="btn-clear" style="margin: 0; padding: 0.75rem 1.5rem;">Cancelar</button>
+          <button type="submit" id="modal-save-btn" class="btn-run-tests" style="margin: 0; padding: 0.75rem 1.5rem;">Salvar Projeto</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Scripts -->
   <script type="module" src="js/main.js"></script>
