@@ -1,5 +1,6 @@
 import { calculateEffort } from "../services/effortCalculator.js";
 import { parseTimeToMinutes, maskTimeInput } from "../utils/timeUtils.js";
+import { addProject } from "../services/projectStorage.js";
 
 /**
  * Inicializa a interface da Calculadora de Esforço.
@@ -198,4 +199,55 @@ export function initEffortUi() {
 
   // Executar primeiro cálculo inicial
   updateCalculation();
+
+  // Botão "Cadastrar Projeto" na aba de viabilidade
+  const saveAsProjectBtn = document.getElementById("save-as-project-btn");
+  saveAsProjectBtn.addEventListener("click", () => {
+    const startDate = document.getElementById("start-date").value;
+    const endDate = document.getElementById("end-date").value;
+    const qtyDevs = parseInt(document.getElementById("qty-devs").value, 10) || 0;
+    const hoursPerDevRaw = document.getElementById("hours-per-dev").value;
+    const qtyQas = parseInt(document.getElementById("qty-qas").value, 10) || 0;
+    const hoursPerQaRaw = document.getElementById("hours-per-qa").value;
+    const estimatedDevHours = parseFloat(document.getElementById("estimated-dev-hours").value) || 0;
+    const estimatedQaHours = parseFloat(document.getElementById("estimated-qa-hours").value) || 0;
+
+    if (!startDate || !endDate) {
+      alert("Preencha as datas de início e fim antes de cadastrar o projeto.");
+      return;
+    }
+
+    let hoursPerDev = 0;
+    let hoursPerQa = 0;
+    try { hoursPerDev = parseTimeToMinutes(hoursPerDevRaw) / 60; } catch (_) {}
+    try { hoursPerQa = parseTimeToMinutes(hoursPerQaRaw) / 60; } catch (_) {}
+
+    const name = prompt("Nome do Projeto:");
+    if (!name || !name.trim()) return;
+
+    try {
+      addProject({
+        title: name.trim(),
+        startDate,
+        endDate,
+        completed: false,
+        qtyDevs,
+        hoursPerDev,
+        estimatedDevHours,
+        qtyQas,
+        hoursPerQa,
+        estimatedQaHours,
+        hoursDevRealized: 0,
+        hoursQaRealized: 0
+      });
+
+      // Alternar para a aba de acompanhamento de projetos
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".app-section").forEach(sec => sec.classList.remove("active"));
+      document.querySelector('[data-target="project-tracking-section"]').classList.add("active");
+      document.getElementById("project-tracking-section").classList.add("active");
+    } catch (err) {
+      alert(err.message);
+    }
+  });
 }
