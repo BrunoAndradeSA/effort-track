@@ -1,6 +1,63 @@
 import { calculateEffort } from "../services/effortCalculator.js";
 import { parseTimeToMinutes, maskTimeInput } from "../utils/timeUtils.js";
 import { addProject } from "../services/projectStorage.js";
+import { refreshProjectList } from "./projectTrackingUi.js";
+
+function showNamePrompt() {
+  return new Promise((resolve) => {
+    const overlay = document.createElement('div');
+    overlay.className = 'confirm-overlay';
+    overlay.innerHTML = `
+      <div class="confirm-dialog">
+        <p class="confirm-message" style="margin-bottom: 1rem;">Nome do Projeto</p>
+        <input type="text" id="project-name-input" class="updater-input-field" placeholder="Ex: App de Finanças" style="width: 100%; margin-bottom: 1.25rem; padding: 0.6rem 0.8rem; font-size: 0.95rem;" autofocus>
+        <div class="confirm-actions">
+          <button class="confirm-cancel-btn">Cancelar</button>
+          <button class="confirm-ok-btn">Confirmar</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('active'));
+
+    const input = overlay.querySelector('#project-name-input');
+    setTimeout(() => input.focus(), 100);
+
+    const cleanup = () => {
+      overlay.remove();
+    };
+
+    overlay.querySelector('.confirm-cancel-btn').addEventListener('click', () => {
+      cleanup();
+      resolve(null);
+    });
+
+    overlay.querySelector('.confirm-ok-btn').addEventListener('click', () => {
+      const val = input.value.trim();
+      cleanup();
+      resolve(val || null);
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const val = input.value.trim();
+        cleanup();
+        resolve(val || null);
+      }
+      if (e.key === 'Escape') {
+        cleanup();
+        resolve(null);
+      }
+    });
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        cleanup();
+        resolve(null);
+      }
+    });
+  });
+}
 
 /**
  * Inicializa a interface da Calculadora de Esforço.
@@ -202,7 +259,7 @@ export function initEffortUi() {
 
   // Botão "Cadastrar Projeto" na aba de viabilidade
   const saveAsProjectBtn = document.getElementById("save-as-project-btn");
-  saveAsProjectBtn.addEventListener("click", () => {
+  saveAsProjectBtn.addEventListener("click", async () => {
     const startDate = document.getElementById("start-date").value;
     const endDate = document.getElementById("end-date").value;
     const qtyDevs = parseInt(document.getElementById("qty-devs").value, 10) || 0;
@@ -222,12 +279,12 @@ export function initEffortUi() {
     try { hoursPerDev = parseTimeToMinutes(hoursPerDevRaw) / 60; } catch (_) {}
     try { hoursPerQa = parseTimeToMinutes(hoursPerQaRaw) / 60; } catch (_) {}
 
-    const name = prompt("Nome do Projeto:");
-    if (!name || !name.trim()) return;
+    const name = await showNamePrompt();
+    if (!name) return;
 
     try {
       addProject({
-        title: name.trim(),
+        title: name,
         startDate,
         endDate,
         completed: false,
@@ -240,6 +297,8 @@ export function initEffortUi() {
         hoursDevRealized: 0,
         hoursQaRealized: 0
       });
+
+      refreshProjectList();
 
       // Alternar para a aba de acompanhamento de projetos
       document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));

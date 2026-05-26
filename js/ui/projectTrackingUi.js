@@ -2,6 +2,12 @@ import { getProjects, addProject, updateProject, deleteProject } from '../servic
 import { calculateProjectMetrics } from '../services/projectCalculations.js';
 import { maskTimeInput, parseTimeToMinutes, formatMinutesToTime } from '../utils/timeUtils.js';
 
+let _renderProjects = null;
+
+export function refreshProjectList() {
+  if (_renderProjects) _renderProjects();
+}
+
 export function initProjectTrackingUi() {
   const newProjectBtn = document.getElementById('new-project-btn');
   const projectModal = document.getElementById('project-modal');
@@ -572,4 +578,5 @@ export function initProjectTrackingUi() {
 
   // Render inicial
   renderProjects();
+  _renderProjects = renderProjects;
 }
