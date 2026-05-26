@@ -1,7 +1,7 @@
 import { getSettings, saveSettings } from "../services/settingsStorage.js";
 import { maskTimeInput } from "../utils/timeUtils.js";
 
-function createBadgeChip(email, container, input) {
+function createBadgeChip(email, insertBeforeEl) {
   const chip = document.createElement("span");
   chip.className = "badge-chip";
   chip.textContent = email;
@@ -14,15 +14,7 @@ function createBadgeChip(email, container, input) {
     chip.remove();
   });
   chip.appendChild(remove);
-  container.insertBefore(chip, input);
-}
-
-function commitPending(badgeContainer) {
-  const input = badgeContainer.querySelector(".badge-text-input");
-  const raw = input.value.trim();
-  if (!raw) return;
-  createBadgeChip(raw, badgeContainer, input);
-  input.value = "";
+  insertBeforeEl.parentNode.insertBefore(chip, insertBeforeEl);
 }
 
 export function initSettingsUi() {
@@ -39,6 +31,7 @@ export function initSettingsUi() {
   maskTimeInput(hoursInput);
 
   const badgeInput = badgeContainer.querySelector(".badge-text-input");
+  const inputWrapper = badgeInput.parentNode; // div com width:100%
 
   badgeInput.addEventListener("input", () => {
     const semiIdx = badgeInput.value.indexOf(";");
@@ -47,7 +40,7 @@ export function initSettingsUi() {
     const last = parts.pop();
     parts.forEach(p => {
       const trimmed = p.trim();
-      if (trimmed) createBadgeChip(trimmed, badgeContainer, badgeInput);
+      if (trimmed) createBadgeChip(trimmed, inputWrapper);
     });
     badgeInput.value = last;
   });
@@ -55,7 +48,11 @@ export function initSettingsUi() {
   badgeInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      commitPending(badgeContainer);
+      const raw = badgeInput.value.trim();
+      if (raw) {
+        createBadgeChip(raw, inputWrapper);
+        badgeInput.value = "";
+      }
     }
     if (e.key === "Backspace" && badgeInput.value === "") {
       const chips = badgeContainer.querySelectorAll(".badge-chip");
@@ -68,7 +65,7 @@ export function initSettingsUi() {
 
   function renderEmails(emails) {
     badgeContainer.querySelectorAll(".badge-chip").forEach(el => el.remove());
-    emails.forEach(email => createBadgeChip(email, badgeContainer, badgeInput));
+    emails.forEach(email => createBadgeChip(email, inputWrapper));
   }
 
   function collectEmails() {
