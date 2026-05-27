@@ -194,3 +194,32 @@ export async function copyReportToClipboard(project, metrics) {
     }
   }
 }
+
+export function downloadPdfReport(project, metrics) {
+  const html = generateHtmlBody(project, metrics);
+  const printStyles = `
+    @page { margin: 8mm; size: A4; }
+    body { font-family: Arial, Helvetica, sans-serif; padding: 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    svg { display: block; }
+  `;
+  const fullDoc = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Relatório - ${project.title}</title>
+  <style>${printStyles}</style>
+</head>
+<body>
+  ${html}
+  <script>window.print()<\/script>
+</body>
+</html>`;
+  const blob = new Blob([fullDoc], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const w = window.open(url, '_blank');
+  if (w) {
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  } else {
+    URL.revokeObjectURL(url);
+  }
+}
