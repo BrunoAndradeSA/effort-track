@@ -1,6 +1,7 @@
 import { calculateEffort } from "../services/effortCalculator.js";
 import { parseTimeToMinutes, maskTimeInput } from "../utils/timeUtils.js";
 import { addProject } from "../services/projectStorage.js";
+import { getSettings } from "../services/settingsStorage.js";
 import { refreshProjectList } from "./projectTrackingUi.js";
 import { getSettings } from "../services/settingsStorage.js";
 
@@ -315,7 +316,8 @@ export function initEffortUi() {
         hoursPerQa,
         estimatedQaHours,
         hoursDevRealized: 0,
-        hoursQaRealized: 0
+        hoursQaRealized: 0,
+        stakeholderEmails: getSettings().stakeholderEmails || []
       });
 
       refreshProjectList();
