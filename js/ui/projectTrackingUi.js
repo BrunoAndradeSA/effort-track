@@ -2,7 +2,7 @@ import { getProjects, addProject, updateProject, deleteProject } from '../servic
 import { calculateProjectMetrics } from '../services/projectCalculations.js';
 import { maskTimeInput, parseTimeToMinutes, formatMinutesToTime } from '../utils/timeUtils.js';
 import { getSettings } from '../services/settingsStorage.js';
-import { generateMailToUrl, generatePlainTextBody, downloadPdfReport, downloadHtmlReport } from '../services/emailReport.js';
+import { generateMailToUrl, copyReportToClipboard, generatePlainTextBody, downloadPdfReport } from '../services/emailReport.js';
 
 let _renderProjects = null;
 
@@ -322,17 +322,24 @@ export function initProjectTrackingUi() {
       card.querySelector('.btn-email-proj').addEventListener('click', async (e) => {
         e.currentTarget.disabled = true;
         try {
-          downloadHtmlReport(project, metrics);
+          await copyReportToClipboard(project, metrics);
           const url = generateMailToUrl(project, metrics);
           if (navigator.share && window.innerWidth < 768) {
             await navigator.share({ title: project.title, text: generatePlainTextBody(project, metrics) });
+          } else if (url.length > 8000) {
+            showToast('Relatório HTML copiado! Cole no corpo do email.');
           } else {
+            showToast('Relatório HTML copiado! Abra o email e cole.');
             window.location.href = url;
           }
-          showToast('Relatório baixado! Abra o arquivo, imprima como PDF e anexe ao email.');
         } catch (err) {
           if (err.name !== 'AbortError') {
-            showToast('Email aberto. Relatório disponível para download no botão ao lado.');
+            const fallbackOk = await copyReportToClipboard(project, metrics);
+            if (fallbackOk.success) {
+              showToast('Relatório copiado! Abra seu email e cole (Ctrl+V).');
+            } else {
+              showToast('Não foi possível copiar o relatório. Copie manualmente.');
+            }
           }
         } finally {
           e.currentTarget.disabled = false;
