@@ -246,3 +246,35 @@ export function downloadPdfReport(project, metrics) {
     URL.revokeObjectURL(url);
   }
 }
+
+export function downloadHtmlReport(project, metrics) {
+  const html = generateHtmlBody(project, metrics);
+  const fullDoc = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Relatório - ${project.title}</title>
+  <style>
+    @page { margin: 6mm; size: A4; }
+    body { font-family: 'Outfit','Inter',Arial,Helvetica,sans-serif; padding: 16px; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    svg { display: block; max-width: 100%; }
+    @media print { body { padding: 0; } }
+  </style>
+</head>
+<body>
+  ${html}
+</body>
+</html>`;
+  const safeName = project.title.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 40);
+  const blob = new Blob([fullDoc], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `relatorio_${safeName}.html`;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
