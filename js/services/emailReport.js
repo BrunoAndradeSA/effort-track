@@ -101,66 +101,89 @@ export function generateHtmlBody(project, metrics) {
   const barRealPct = Math.round(metrics.overallProgressReal);
   const barExpectedPct = Math.round(metrics.expectedProgress);
   const totalDays = metrics.elapsedWorkingDays + metrics.remainingWorkingDays;
+  const accent = '#7c5cfc';
+  const border = '#e2e4e8';
+  const textMuted = '#6b7280';
+  const textDark = '#111827';
 
-  const devHoursExpected = Math.round(metrics.elapsedWorkingDays * metrics.devDailyCapacity);
-  const qaHoursExpected = Math.round(metrics.elapsedWorkingDays * metrics.qaDailyCapacity);
-
-  return `<div style="font-family:Arial,Helvetica,sans-serif;max-width:580px;margin:0 auto;padding:20px;background:#f4f5f7;border-radius:10px;">
-  <div style="text-align:center;padding:12px 0 14px;border-bottom:2px solid #e2e4e8;">
-    <h1 style="margin:0;font-size:19px;color:#111827;">Acompanhamento de Evolução</h1>
-    <p style="margin:3px 0 0;font-size:12px;color:#6b7280;">${project.title} &mdash; ${fmtDateBR(project.startDate)} a ${fmtDateBR(project.endDate)}</p>
+  return `<div style="font-family:'Outfit','Inter',Arial,Helvetica,sans-serif;max-width:580px;margin:0 auto;background:#f0f2f5;border-radius:16px;overflow:hidden;">
+  <div style="padding:20px 24px 16px;background:#fff;border-bottom:1px solid ${border};text-align:center;">
+    <h1 style="margin:0;font-family:'Outfit',Arial,sans-serif;font-size:18px;font-weight:800;color:${textDark};">Acompanhamento de Evolu\u00e7\u00e3o</h1>
+    <p style="margin:4px 0 0;font-size:12px;color:${textMuted};">${project.title} &mdash; ${fmtDateBR(project.startDate)} a ${fmtDateBR(project.endDate)}</p>
   </div>
 
-  <div style="display:inline-block;margin-top:14px;padding:5px 14px;border-radius:20px;font-size:13px;font-weight:700;color:${color};background:${bg};border:1px solid ${color};">${statusText(project, metrics)}</div>
-  <span style="margin-left:10px;font-size:12px;color:#6b7280;">${metrics.remainingWorkingDays} dias &uacute;teis restantes</span>
+  <div style="position:relative;margin:16px 24px 0;padding:4px 0 4px 14px;border-left:4px solid ${color};background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="padding:12px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:${color};background:${bg};border:1px solid ${color};">${statusText(project, metrics)}</span>
+      <span style="font-size:12px;color:${textMuted};">${metrics.remainingWorkingDays} dias \u00fateis restantes</span>
+    </div>
+  </div>
 
-  <table style="width:100%;margin-top:14px;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;">
-    <tr><td style="padding:12px 14px 4px;font-size:13px;font-weight:700;color:#374151;">&#9201; Recursos Alocados</td></tr>
-    <tr><td style="padding:2px 14px;font-size:12px;color:#6b7280;">DEV: <strong>${project.qtyDevs}</strong> devs &times; <strong>${project.hoursPerDev}h</strong>/dia = <strong>${metrics.devDailyCapacity}h</strong>/dia</td></tr>
-    <tr><td style="padding:2px 14px 12px;font-size:12px;color:#6b7280;">QA: <strong>${project.qtyQas}</strong> qas &times; <strong>${project.hoursPerQa}h</strong>/dia = <strong>${metrics.qaDailyCapacity}h</strong>/dia</td></tr>
-  </table>
+  <div style="margin:12px 24px 0;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);overflow:hidden;">
+    <div style="padding:16px 20px 8px;font-size:13px;font-weight:700;font-family:'Outfit',Arial,sans-serif;color:${textDark};">Recursos Alocados</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <tr>
+        <td style="width:50%;padding:4px 10px 4px 20px;color:${textMuted};vertical-align:top;">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${accent};margin-right:6px;"></span>DEV: <strong>${project.qtyDevs}</strong> devs &times; <strong>${project.hoursPerDev}h</strong>/dia
+        </td>
+        <td style="width:50%;padding:4px 20px 4px 10px;color:${textMuted};vertical-align:top;text-align:right;">
+          Capacidade <strong>${metrics.devDailyCapacity}h</strong>/dia
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:4px 10px 12px 20px;color:${textMuted};vertical-align:top;">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${accent};margin-right:6px;"></span>QA: <strong>${project.qtyQas}</strong> qas &times; <strong>${project.hoursPerQa}h</strong>/dia
+        </td>
+        <td style="padding:4px 20px 12px 10px;color:${textMuted};vertical-align:top;text-align:right;">
+          Capacidade <strong>${metrics.qaDailyCapacity}h</strong>/dia
+        </td>
+      </tr>
+    </table>
+  </div>
 
-  <table style="width:100%;margin-top:8px;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;">
-    <tr><td style="padding:12px 14px 8px;font-size:13px;font-weight:700;color:#374151;">&#9729; Progresso da Produ&ccedil;&atilde;o</td></tr>
-    <tr><td style="padding:2px 14px 4px;"><div style="display:flex;justify-content:space-between;font-size:11px;color:#6b7280;margin-bottom:3px;"><span>Esperado</span><span>${barExpectedPct}%</span></div>${progressBarSvg(barExpectedPct, '#9ca3af', 10)}</td></tr>
-    <tr><td style="padding:2px 14px 8px;"><div style="display:flex;justify-content:space-between;font-size:11px;color:#6b7280;margin-bottom:3px;"><span>Real</span><span>${barRealPct}%</span></div>${progressBarSvg(barRealPct, color, 10)}</td></tr>
-    <tr><td style="padding:4px 14px 12px;border-top:1px solid #f3f4f6;">
+  <div style="margin:8px 24px 0;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);overflow:hidden;">
+    <div style="padding:16px 20px 8px;font-size:13px;font-weight:700;font-family:'Outfit',Arial,sans-serif;color:${textDark};">Progresso</div>
+    <div style="padding:4px 20px 8px;">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:${textMuted};margin-bottom:3px;"><span>Esperado</span><span>${barExpectedPct}%</span></div>
+      ${progressBarSvg(barExpectedPct, '#9ca3af', 8)}
+    </div>
+    <div style="padding:2px 20px 12px;">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:${textMuted};margin-bottom:3px;"><span>Real</span><span>${barRealPct}%</span></div>
+      ${progressBarSvg(barRealPct, color, 8)}
+    </div>
+    <div style="padding:8px 20px 16px;border-top:1px solid ${border};">
       <table style="width:100%;border-collapse:collapse;font-size:12px;">
-        <tr><td style="padding:3px 0;color:#6b7280;">Horas DEV</td><td style="padding:3px 0;text-align:right;font-weight:600;">${project.hoursDevRealized}h realiz. / ${project.estimatedDevHours}h estim. <span style="color:#6b7280;font-weight:400;">(${Math.round(metrics.devProgressReal)}%)</span></td></tr>
-        <tr><td style="padding:3px 0;color:#6b7280;">Horas QA</td><td style="padding:3px 0;text-align:right;font-weight:600;">${project.hoursQaRealized}h realiz. / ${project.estimatedQaHours}h estim. <span style="color:#6b7280;font-weight:400;">(${Math.round(metrics.qaProgressReal)}%)</span></td></tr>
+        <tr><td style="padding:3px 0;color:${textMuted};">Horas DEV</td><td style="padding:3px 0;text-align:right;font-weight:600;">${project.hoursDevRealized}h / ${project.estimatedDevHours}h <span style="color:${textMuted};font-weight:400;">(${Math.round(metrics.devProgressReal)}%)</span></td></tr>
+        <tr><td style="padding:3px 0;color:${textMuted};">Horas QA</td><td style="padding:3px 0;text-align:right;font-weight:600;">${project.hoursQaRealized}h / ${project.estimatedQaHours}h <span style="color:${textMuted};font-weight:400;">(${Math.round(metrics.qaProgressReal)}%)</span></td></tr>
       </table>
-    </td></tr>
-  </table>
+    </div>
+  </div>
 
-  <table style="width:100%;margin-top:8px;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;">
-    <tr><td style="padding:12px 14px 4px;font-size:13px;font-weight:700;color:#374151;">&#9200; Tempo Decorrido</td></tr>
-    <tr><td style="padding:2px 14px 12px;">${timelineSvg(metrics.elapsedWorkingDays, totalDays, '#3b82f6')}</td></tr>
-  </table>
+  <div style="margin:8px 24px 0;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);overflow:hidden;">
+    <div style="padding:16px 20px 8px;font-size:13px;font-weight:700;font-family:'Outfit',Arial,sans-serif;color:${textDark};">Tempo</div>
+    <div style="padding:4px 20px 16px;">${timelineSvg(metrics.elapsedWorkingDays, totalDays, '#3b82f6')}</div>
+  </div>
 
-  <table style="width:100%;margin-top:8px;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;">
-    <tr><td style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;">
-      <span style="font-size:13px;color:#374151;">Diferen&ccedil;a (Real &minus; Esperado)</span>
-      <span style="font-size:17px;font-weight:700;color:${diffColor};">${diffSign(diff)}${diff}%</span>
-    </td></tr>
-  </table>
+  <div style="margin:8px 24px 0;padding:14px 20px;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-size:13px;color:${textDark};">Diferen\u00e7a <span style="color:${textMuted};">(Real \u2212 Esperado)</span></span>
+    <span style="font-size:18px;font-weight:800;font-family:'Outfit',Arial,sans-serif;color:${diffColor};">${diffSign(diff)}${diff}%</span>
+  </div>
 
-  <table style="width:100%;margin-top:8px;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;">
-    <tr><td style="padding:12px 14px 6px;font-size:13px;font-weight:700;color:#374151;">&#128202; Previs&atilde;o</td></tr>
-    <tr><td style="padding:3px 14px;">
+  <div style="margin:8px 24px 0;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);overflow:hidden;">
+    <div style="padding:16px 20px 8px;font-size:13px;font-weight:700;font-family:'Outfit',Arial,sans-serif;color:${textDark};">Previs\u00e3o</div>
+    <div style="padding:4px 20px;">
       <table style="width:100%;border-collapse:collapse;font-size:12px;">
-        <tr><td style="padding:4px 0;color:#6b7280;">Chance de sucesso</td><td style="padding:4px 0;text-align:right;font-weight:700;font-size:15px;color:${color};">${metrics.successChance}%</td></tr>
-        <tr><td style="padding:4px 0;color:#6b7280;">Conclus&atilde;o planejada</td><td style="padding:4px 0;text-align:right;">${fmtDateBR(project.endDate)}</td></tr>
-        <tr><td style="padding:4px 0;color:#6b7280;">Conclus&atilde;o prevista atual</td><td style="padding:4px 0;text-align:right;font-weight:600;">${fmtDateBR(metrics.projectedCompletionDate)}</td></tr>
+        <tr><td style="padding:4px 0;color:${textMuted};">Chance de sucesso</td><td style="padding:4px 0;text-align:right;font-weight:800;font-size:16px;font-family:'Outfit',Arial,sans-serif;color:${color};">${metrics.successChance}%</td></tr>
+        <tr><td style="padding:4px 0;color:${textMuted};">Conclus\u00e3o planejada</td><td style="padding:4px 0;text-align:right;font-weight:600;">${fmtDateBR(project.endDate)}</td></tr>
+        <tr><td style="padding:4px 0 0;color:${textMuted};">Previs\u00e3o atual</td><td style="padding:4px 0 0;text-align:right;font-weight:600;">${fmtDateBR(metrics.projectedCompletionDate)}</td></tr>
       </table>
-    </td></tr>
-    <tr><td style="padding:8px 14px 6px;">
-      ${progressBarSvg(metrics.successChance, color, 8)}
-    </td></tr>
-    <tr><td style="padding:0 14px 12px;text-align:right;font-size:10px;color:#9ca3af;">${metrics.successChance}% de chance de concluir no prazo</td></tr>
-  </table>
+    </div>
+    <div style="padding:4px 20px 8px 20px;">${progressBarSvg(metrics.successChance, color, 6)}</div>
+    <div style="padding:0 20px 16px;text-align:right;font-size:10px;color:${textMuted};">${metrics.successChance}% de chance de concluir no prazo</div>
+  </div>
 
-  <div style="margin-top:14px;padding-top:10px;border-top:1px solid #e2e4e8;text-align:center;font-size:10px;color:#9ca3af;">
-    Relat&oacute;rio gerado automaticamente pelo <strong>Effort Track</strong>
+  <div style="margin:16px 24px 24px;padding-top:12px;border-top:1px solid ${border};text-align:center;font-size:10px;color:#9ca3af;">
+    Relat\u00f3rio gerado automaticamente pelo <strong style="color:${accent};">Effort Track</strong>
   </div>
 </div>`.trim();
 }
@@ -198,8 +221,8 @@ export async function copyReportToClipboard(project, metrics) {
 export function downloadPdfReport(project, metrics) {
   const html = generateHtmlBody(project, metrics);
   const printStyles = `
-    @page { margin: 8mm; size: A4; }
-    body { font-family: Arial, Helvetica, sans-serif; padding: 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    @page { margin: 6mm; size: A4; }
+    body { font-family: 'Outfit', 'Inter', Arial, Helvetica, sans-serif; padding: 0; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     svg { display: block; }
   `;
   const fullDoc = `<!DOCTYPE html>
