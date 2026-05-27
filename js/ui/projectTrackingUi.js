@@ -2,6 +2,7 @@ import { getProjects, addProject, updateProject, deleteProject } from '../servic
 import { calculateProjectMetrics } from '../services/projectCalculations.js';
 import { maskTimeInput, parseTimeToMinutes, formatMinutesToTime } from '../utils/timeUtils.js';
 import { getSettings } from '../services/settingsStorage.js';
+import { generateMailToUrl, copyReportToClipboard, generatePlainTextBody } from '../services/emailReport.js';
 
 let _renderProjects = null;
 
@@ -92,6 +93,20 @@ export function initProjectTrackingUi() {
   // Aplicar máscaras de horário nos inputs de texto de horas/dia no modal
   maskTimeInput(hoursPerDevInput);
   maskTimeInput(hoursPerQaInput);
+
+  function showToast(msg) {
+    const el = document.createElement('div');
+    el.textContent = msg;
+    Object.assign(el.style, {
+      position:'fixed', bottom:'24px', left:'50%', transform:'translateX(-50%)',
+      background:'var(--glass-bg,#1f2937)', color:'#fff', padding:'12px 20px',
+      borderRadius:'8px', fontSize:'14px', zIndex:'9999', maxWidth:'90vw',
+      textAlign:'center', boxShadow:'0 4px 16px rgba(0,0,0,0.3)',
+      animation:'fadeIn 0.2s ease'
+    });
+    document.body.appendChild(el);
+    setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 0.3s'; setTimeout(() => el.remove(), 300); }, 4000);
+  }
 
   // Renderizar projetos
   function renderProjects() {
@@ -187,6 +202,12 @@ export function initProjectTrackingUi() {
           <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
             <span class="status-badge ${statusBadgeClass}">${statusText}</span>
             <div class="project-card-actions">
+              <button class="project-card-btn btn-email-proj" title="Enviar relatório por e-mail" aria-label="Enviar relatório do projeto ${project.title}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                  <polyline points="2,4 12,13 22,4"></polyline>
+                </svg>
+              </button>
               <button class="project-card-btn btn-edit-proj" title="Editar Projeto" aria-label="Editar projeto ${project.title}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -288,6 +309,36 @@ export function initProjectTrackingUi() {
             renderProjects();
           }
         );
+      });
+
+      // Evento de envio de relatório por e-mail
+      card.querySelector('.btn-email-proj').addEventListener('click', async (e) => {
+        e.currentTarget.disabled = true;
+        try {
+          if (navigator.share && window.innerWidth < 768) {
+            const plain = generatePlainTextBody(project, metrics);
+            await navigator.share({ title: project.title, text: plain });
+          } else {
+            const url = generateMailToUrl(project, metrics);
+            if (url.length > 8000) {
+              await navigator.clipboard.writeText(generatePlainTextBody(project, metrics));
+              showToast('Relatório copiado para a área de transferência (muito grande para o email direto).');
+            } else {
+              window.location.href = url;
+            }
+          }
+        } catch (err) {
+          if (err.name !== 'AbortError') {
+            try {
+              await navigator.clipboard.writeText(generatePlainTextBody(project, metrics));
+              showToast('Relatório copiado para a área de transferência. Abra seu email e cole.');
+            } catch (_) {
+              showToast('Não foi possível abrir o aplicativo de email. Copie o relatório manualmente.');
+            }
+          }
+        } finally {
+          e.currentTarget.disabled = false;
+        }
       });
 
       // Botão Salvar: persiste horas DEV, horas QA e flag concluído
