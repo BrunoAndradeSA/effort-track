@@ -2,7 +2,6 @@ import { getProjects, addProject, updateProject, deleteProject } from '../servic
 import { calculateProjectMetrics } from '../services/projectCalculations.js';
 import { maskTimeInput, parseTimeToMinutes, formatMinutesToTime } from '../utils/timeUtils.js';
 import { getSettings } from '../services/settingsStorage.js';
-import { getSettings } from '../services/settingsStorage.js';
 
 let _renderProjects = null;
 
