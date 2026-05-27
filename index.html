@@ -64,7 +64,16 @@
 
     <!-- NAVEGAÇÃO PRINCIPAL (ABAS) -->
     <nav class="navigation-bar" role="tablist">
-      <button class="tab-btn active" role="tab" aria-selected="true" data-target="effort-section" id="tab-effort">
+      <button class="tab-btn active" role="tab" aria-selected="true" data-target="dashboard-section" id="tab-dashboard">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+        </svg>
+        Dashboard
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-target="effort-section" id="tab-effort">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
           <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
@@ -110,8 +119,100 @@
       </button>
     </nav>
 
-    <!-- 1. ABA VIABILIDADE DE PRAZO -->
-    <section id="effort-section" class="app-section active glass-panel" role="tabpanel" aria-labelledby="tab-effort">
+    <!-- 1. ABA DASHBOARD -->
+    <section id="dashboard-section" class="app-section active glass-panel" role="tabpanel" aria-labelledby="tab-dashboard">
+      <h2 class="section-title">Dashboard</h2>
+      <p class="section-subtitle">Visão geral dos projetos cadastrados com métricas e indicadores de desempenho.</p>
+
+      <div class="dash-stats-grid">
+        <div class="dash-stat-card">
+          <span class="dash-stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </span>
+          <span class="dash-stat-label">Projetos Cadastrados</span>
+          <span id="dash-total-projects" class="dash-stat-value">0</span>
+        </div>
+        <div class="dash-stat-card">
+          <span class="dash-stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </span>
+          <span class="dash-stat-label">Horas Totais Estimadas</span>
+          <span id="dash-total-estimated" class="dash-stat-value">00:00</span>
+        </div>
+        <div class="dash-stat-card">
+          <span class="dash-stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 11 12 14 22 4"></polyline>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+            </svg>
+          </span>
+          <span class="dash-stat-label">Horas Totais Realizadas</span>
+          <span id="dash-total-realized" class="dash-stat-value">00:00</span>
+        </div>
+        <div class="dash-stat-card">
+          <span class="dash-stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+              <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+              <line x1="6" y1="6" x2="6.01" y2="6"></line>
+              <line x1="6" y1="18" x2="6.01" y2="18"></line>
+            </svg>
+          </span>
+          <span class="dash-stat-label">Projetos em Paralelo</span>
+          <span id="dash-parallel-projects" class="dash-stat-value">0</span>
+        </div>
+        <div class="dash-stat-card dash-card-success">
+          <span class="dash-stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </span>
+          <span class="dash-stat-label">Concluídos no Prazo</span>
+          <span id="dash-completed-pct" class="dash-stat-value">0%</span>
+        </div>
+        <div class="dash-stat-card dash-card-danger">
+          <span class="dash-stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </span>
+          <span class="dash-stat-label">Projetos em Atraso</span>
+          <span id="dash-overdue-pct" class="dash-stat-value">0%</span>
+        </div>
+        <div class="dash-stat-card dash-card-warning">
+          <span class="dash-stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </span>
+          <span class="dash-stat-label">Média de Atraso</span>
+          <span id="dash-avg-delay" class="dash-stat-value">0 dias</span>
+        </div>
+      </div>
+
+      <div class="dash-upcoming-section">
+        <h3 class="dash-upcoming-title">Próximos Projetos a Entregar</h3>
+        <div class="dash-upcoming-header">
+          <span class="dash-upcoming-header-cell">Projeto</span>
+          <span class="dash-upcoming-header-cell">Dias Restantes</span>
+          <span class="dash-upcoming-header-cell">Chance de Conclusão</span>
+        </div>
+        <div id="dash-upcoming-list" class="dash-upcoming-list">
+          <div class="dash-empty-state">Nenhum projeto em andamento.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. ABA VIABILIDADE DE PRAZO -->
+    <section id="effort-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-effort">
       <h2 class="section-title">Cálculo de Viabilidade de Prazo</h2>
       <p class="section-subtitle">Estime a capacidade de desenvolvimento e garantia de qualidade (QA) para determinar a viabilidade de entrega de um prazo.</p>
 
@@ -243,7 +344,7 @@
       </div>
     </section>
 
-    <!-- 2. ABA ACOMPANHAMENTO DE PROJETOS -->
+    <!-- 3. ABA ACOMPANHAMENTO DE PROJETOS -->
     <section id="project-tracking-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-project-tracking">
       <div class="project-tracking-header">
         <div>
@@ -275,7 +376,7 @@
       </div>
     </section>
 
-    <!-- 3. ABA CALCULADORA DE HORAS -->
+    <!-- 4. ABA CALCULADORA DE HORAS -->
     <section id="hours-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-hours">
       <h2 class="section-title">Calculadora de Horas</h2>
       <p class="section-subtitle">Realize cálculos matemáticos livremente combinando horas, minutos e números decimais.</p>
@@ -327,7 +428,7 @@
       </div>
     </section>
 
-    <!-- 4. ABA DIFERENÇA ENTRE DATAS -->
+    <!-- 5. ABA DIFERENÇA ENTRE DATAS -->
     <section id="date-diff-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-date-diff">
       <h2 class="section-title">Diferença entre Datas</h2>
       <p class="section-subtitle">Calcule a quantidade de dias corridos, dias úteis e horas úteis entre duas datas.</p>
@@ -403,7 +504,7 @@
       </div>
     </section>
 
-    <!-- 5. ABA TESTES UNITÁRIOS -->
+    <!-- 6. ABA TESTES UNITÁRIOS -->
     <section id="tests-section" class="app-section glass-panel" role="tabpanel" aria-labelledby="tab-tests">
       <div class="tests-header-row">
         <div>

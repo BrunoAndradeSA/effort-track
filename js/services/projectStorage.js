@@ -38,6 +38,10 @@ export function saveProjects(projects) {
  * 
  * @param {object} project - Objeto de projeto completo.
  */
+function notifyProjectsChanged() {
+  window.dispatchEvent(new CustomEvent('projects-changed'));
+}
+
 export function addProject(project) {
   const projects = getProjects();
   
@@ -49,6 +53,7 @@ export function addProject(project) {
 
   projects.push(project);
   saveProjects(projects);
+  notifyProjectsChanged();
 }
 
 /**
@@ -69,6 +74,7 @@ export function updateProject(title, updatedFields) {
   const updatedProject = { ...projects[index], ...updatedFields, title: projects[index].title };
   projects[index] = updatedProject;
   saveProjects(projects);
+  notifyProjectsChanged();
 }
 
 /**
@@ -80,4 +86,5 @@ export function deleteProject(title) {
   let projects = getProjects();
   projects = projects.filter(p => p.title.toLowerCase() !== title.toLowerCase());
   saveProjects(projects);
+  notifyProjectsChanged();
 }

@@ -4,6 +4,7 @@ import { initEffortUi } from "./ui/effortUi.js";
 import { initDateDiffUi } from "./ui/dateDiffUi.js";
 import { initTestUi } from "./ui/testUi.js";
 import { initProjectTrackingUi } from "./ui/projectTrackingUi.js";
+import { initDashboardUi } from "./ui/dashboardUi.js";
 import { initSettingsUi } from "./ui/settingsUi.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -57,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 4. Inicializar as UIs correspondentes
+  initDashboardUi();
   initHoursUi();
   initEffortUi();
   initDateDiffUi();

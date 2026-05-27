@@ -5,9 +5,19 @@ import { getSettings } from '../services/settingsStorage.js';
 import { generateMailToUrl, copyReportToClipboard, generatePlainTextBody, downloadPdfReport } from '../services/emailReport.js';
 
 let _renderProjects = null;
+let _openModal = null;
 
 export function refreshProjectList() {
   if (_renderProjects) _renderProjects();
+}
+
+export function openProjectForEditing(title) {
+  if (!_openModal) return;
+  const projects = getProjects();
+  const project = projects.find(p => p.title.toLowerCase() === title.toLowerCase());
+  if (project) {
+    _openModal(project);
+  }
 }
 
 export function initProjectTrackingUi() {
@@ -698,4 +708,5 @@ export function initProjectTrackingUi() {
   // Render inicial
   renderProjects();
   _renderProjects = renderProjects;
+  _openModal = openModal;
 }

@@ -1080,6 +1080,215 @@ input[type="date"] {
 }
 
 /* ==========================================================================
+   DASHBOARD
+   ========================================================================== */
+
+.dash-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 500px) {
+  .dash-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 750px) {
+  .dash-stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1000px) {
+  .dash-stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1300px) {
+  .dash-stats-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (min-width: 1600px) {
+  .dash-stats-grid {
+    grid-template-columns: repeat(7, 1fr);
+  }
+}
+
+.dash-stat-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  text-align: center;
+  box-shadow: var(--card-shadow);
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.dash-stat-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.dash-stat-icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--accent);
+  margin-bottom: 0.15rem;
+}
+
+.dash-stat-icon svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+.dash-stat-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.dash-stat-value {
+  font-family: var(--font-family-title);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.dash-card-success .dash-stat-icon {
+  color: var(--success);
+}
+
+.dash-card-danger .dash-stat-icon {
+  color: var(--danger);
+}
+
+.dash-card-warning .dash-stat-icon {
+  color: var(--warning);
+}
+
+/* Próximos Projetos */
+.dash-upcoming-section {
+  margin-top: 1.5rem;
+}
+
+.dash-upcoming-title {
+  font-family: var(--font-family-title);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.dash-upcoming-header {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--accent-light);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.dash-upcoming-header-cell:last-child {
+  text-align: right;
+}
+
+.dash-upcoming-list {
+  border: 1px solid var(--border-color);
+  border-top: none;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  overflow: hidden;
+}
+
+.dash-upcoming-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  transition: background var(--transition-fast);
+}
+
+.dash-upcoming-row:last-child {
+  border-bottom: none;
+}
+
+.dash-upcoming-row {
+  cursor: pointer;
+}
+
+.dash-upcoming-row:hover {
+  background: var(--accent-light);
+}
+
+.dash-upcoming-title {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dash-upcoming-days {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.dash-upcoming-chance {
+  font-family: var(--font-family-title);
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-align: right;
+  min-width: 3rem;
+}
+
+.chance-healthy {
+  color: var(--success);
+}
+
+.chance-warning {
+  color: var(--warning);
+}
+
+.chance-danger {
+  color: var(--danger);
+}
+
+.text-danger {
+  color: var(--danger) !important;
+}
+
+.dash-empty-state {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+/* ==========================================================================
    RESPONSIVIDADE - TABLETS (< 768px)
    ========================================================================== */
 @media (max-width: 768px) {
@@ -1204,6 +1413,23 @@ input[type="date"] {
     flex-direction: column;
     text-align: center;
     gap: 0.25rem;
+  }
+
+  /* Dashboard */
+  .dash-stat-card {
+    padding: 1rem;
+  }
+
+  .dash-stat-value {
+    font-size: 1.3rem;
+  }
+
+  .dash-upcoming-header,
+  .dash-upcoming-row {
+    grid-template-columns: 1fr auto auto;
+    gap: 0.75rem;
+    padding: 0.7rem 0.85rem;
+    font-size: 0.82rem;
   }
 
   /* Diferença entre Datas */

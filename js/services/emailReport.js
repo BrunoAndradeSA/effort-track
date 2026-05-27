@@ -4,6 +4,14 @@ function fmtDateBR(dateStr) {
   return `${p[2]}/${p[1]}/${p[0]}`;
 }
 
+function fmtHours(decimalHours) {
+  const totalMinutes = Math.round(decimalHours * 60);
+  const h = Math.floor(Math.abs(totalMinutes) / 60);
+  const m = Math.abs(totalMinutes) % 60;
+  const sign = totalMinutes < 0 ? '-' : '';
+  return `${sign}${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
+
 function statusText(project, metrics) {
   if (project.completed) return 'Concluído';
   if (metrics.visualStatus === 'warning') return 'Atenção';
@@ -66,8 +74,8 @@ export function generatePlainTextBody(project, metrics) {
     `Dias úteis restantes: ${metrics.remainingWorkingDays} de ${totalDays}`,
     ``,
     `── Recursos Alocados ──`,
-    `DEV: ${project.qtyDevs} devs × ${project.hoursPerDev}h/dia = ${metrics.devDailyCapacity}h/dia`,
-    `QA:  ${project.qtyQas} qas × ${project.hoursPerQa}h/dia = ${metrics.qaDailyCapacity}h/dia`,
+    `DEV: ${project.qtyDevs} devs × ${fmtHours(project.hoursPerDev)}/dia = ${fmtHours(metrics.devDailyCapacity)}/dia`,
+    `QA:  ${project.qtyQas} qas × ${fmtHours(project.hoursPerQa)}/dia = ${fmtHours(metrics.qaDailyCapacity)}/dia`,
     ``,
     `── Produção Esperada ──`,
     `Horas DEV esperadas: ${Math.round(metrics.elapsedWorkingDays * metrics.devDailyCapacity)}h`,
@@ -124,18 +132,18 @@ export function generateHtmlBody(project, metrics) {
     <table style="width:100%;border-collapse:collapse;font-size:12px;">
       <tr>
         <td style="width:50%;padding:4px 10px 4px 20px;color:${textMuted};vertical-align:top;">
-          <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${accent};margin-right:6px;"></span>DEV: <strong>${project.qtyDevs}</strong> devs &times; <strong>${project.hoursPerDev}h</strong>/dia
+          <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${accent};margin-right:6px;"></span>DEV: <strong>${project.qtyDevs}</strong> devs &times; <strong>${fmtHours(project.hoursPerDev)}</strong>/dia
         </td>
         <td style="width:50%;padding:4px 20px 4px 10px;color:${textMuted};vertical-align:top;text-align:right;">
-          Capacidade <strong>${metrics.devDailyCapacity}h</strong>/dia
+          Capacidade <strong>${fmtHours(metrics.devDailyCapacity)}</strong>/dia
         </td>
       </tr>
       <tr>
         <td style="padding:4px 10px 12px 20px;color:${textMuted};vertical-align:top;">
-          <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${accent};margin-right:6px;"></span>QA: <strong>${project.qtyQas}</strong> qas &times; <strong>${project.hoursPerQa}h</strong>/dia
+          <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${accent};margin-right:6px;"></span>QA: <strong>${project.qtyQas}</strong> qas &times; <strong>${fmtHours(project.hoursPerQa)}</strong>/dia
         </td>
         <td style="padding:4px 20px 12px 10px;color:${textMuted};vertical-align:top;text-align:right;">
-          Capacidade <strong>${metrics.qaDailyCapacity}h</strong>/dia
+          Capacidade <strong>${fmtHours(metrics.qaDailyCapacity)}</strong>/dia
         </td>
       </tr>
     </table>
