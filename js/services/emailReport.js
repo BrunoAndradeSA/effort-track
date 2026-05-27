@@ -169,8 +169,62 @@ export function generateMailToUrl(project, metrics) {
   const emails = (project.stakeholderEmails || []).filter(Boolean);
   const to = emails.join(',');
   const subject = `Acompanhamento de evolução do projeto ${project.title} (${fmtDateBR(project.startDate)} à ${fmtDateBR(project.endDate)})`;
-  const body = generatePlainTextBody(project, metrics);
-  return `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const htmlBody = generateLightHtmlBody(project, metrics);
+  const url = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(htmlBody)}`;
+  if (url.length > 8000) {
+    const fallback = generatePlainTextBody(project, metrics);
+    return `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(fallback)}`;
+  }
+  return url;
+}
+
+function generateLightHtmlBody(project, metrics) {
+  const diff = diffPercent(metrics);
+  const color = statusColor(project, metrics);
+  const diffColor = diff >= 0 ? '#16a34a' : '#dc2626';
+  const totalDays = metrics.elapsedWorkingDays + metrics.remainingWorkingDays;
+  const barRealPct = Math.round(metrics.overallProgressReal);
+  const barExpectedPct = Math.round(metrics.expectedProgress);
+
+  return `<div style="font-family:Arial,sans-serif;max-width:560px">
+  <div style="border-bottom:2px solid #e5e7eb;padding-bottom:10px;margin-bottom:12px">
+    <h2 style="margin:0;font-size:17px;color:#111827">Acompanhamento de Evolu\u00e7\u00e3o</h2>
+    <p style="margin:3px 0 0;font-size:12px;color:#6b7280">${project.title} \u2014 ${fmtDateBR(project.startDate)} a ${fmtDateBR(project.endDate)}</p>
+  </div>
+
+  <p style="margin:6px 0"><strong style="color:${color}">${statusText(project, metrics)}</strong> <span style="color:#6b7280;font-size:12px">\u2022 ${metrics.remainingWorkingDays} dias \u00fateis restantes</span></p>
+
+  <table style="width:100%;border-collapse:collapse;margin:10px 0;font-size:12px;background:#f9fafb;border-radius:6px">
+    <tr><td style="padding:8px 10px;font-weight:700;color:#374151;border-bottom:1px solid #e5e7eb">Recursos Alocados</td></tr>
+    <tr><td style="padding:4px 10px;color:#6b7280">DEV: <strong>${project.qtyDevs}</strong> devs \u00d7 <strong>${project.hoursPerDev}h</strong>/dia = <strong>${metrics.devDailyCapacity}h</strong>/dia</td></tr>
+    <tr><td style="padding:4px 10px 8px;color:#6b7280">QA: <strong>${project.qtyQas}</strong> qas \u00d7 <strong>${project.hoursPerQa}h</strong>/dia = <strong>${metrics.qaDailyCapacity}h</strong>/dia</td></tr>
+  </table>
+
+  <table style="width:100%;border-collapse:collapse;margin:8px 0;font-size:12px;background:#f9fafb;border-radius:6px">
+    <tr><td style="padding:8px 10px;font-weight:700;color:#374151;border-bottom:1px solid #e5e7eb">Progresso da Produ\u00e7\u00e3o</td></tr>
+    <tr><td style="padding:4px 10px;color:#6b7280">Esperado: <strong>${barExpectedPct}%</strong> &nbsp;|&nbsp; Real: <strong style="color:${color}">${barRealPct}%</strong></td></tr>
+    <tr><td style="padding:2px 10px;color:#6b7280">DEV: <strong>${project.hoursDevRealized}h</strong> realiz. de <strong>${project.estimatedDevHours}h</strong> (${Math.round(metrics.devProgressReal)}%)</td></tr>
+    <tr><td style="padding:2px 10px 8px;color:#6b7280">QA: <strong>${project.hoursQaRealized}h</strong> realiz. de <strong>${project.estimatedQaHours}h</strong> (${Math.round(metrics.qaProgressReal)}%)</td></tr>
+  </table>
+
+  <table style="width:100%;border-collapse:collapse;margin:8px 0;font-size:12px;background:#f9fafb;border-radius:6px">
+    <tr><td style="padding:8px 10px;font-weight:700;color:#374151;border-bottom:1px solid #e5e7eb">Tempo</td></tr>
+    <tr><td style="padding:4px 10px 8px;color:#6b7280"><strong>${metrics.elapsedWorkingDays}</strong> dias decorridos de <strong>${totalDays}</strong> \u00fateis | <strong>${metrics.remainingWorkingDays}</strong> restantes</td></tr>
+  </table>
+
+  <table style="width:100%;border-collapse:collapse;margin:8px 0;font-size:12px;background:#f9fafb;border-radius:6px">
+    <tr><td style="padding:8px 10px;font-weight:700;color:#374151">Diferen\u00e7a (Real \u2212 Esperado): <strong style="color:${diffColor}">${diffSign(diff)}${diff}%</strong></td></tr>
+  </table>
+
+  <table style="width:100%;border-collapse:collapse;margin:8px 0;font-size:12px;background:#f9fafb;border-radius:6px">
+    <tr><td style="padding:8px 10px;font-weight:700;color:#374151;border-bottom:1px solid #e5e7eb">Previs\u00e3o</td></tr>
+    <tr><td style="padding:4px 10px;color:#6b7280">Chance de sucesso: <strong style="color:${color};font-size:14px">${metrics.successChance}%</strong></td></tr>
+    <tr><td style="padding:2px 10px;color:#6b7280">Conclus\u00e3o planejada: <strong>${fmtDateBR(project.endDate)}</strong></td></tr>
+    <tr><td style="padding:2px 10px 8px;color:#6b7280">Conclus\u00e3o prevista atual: <strong>${fmtDateBR(metrics.projectedCompletionDate)}</strong></td></tr>
+  </table>
+
+  <p style="margin:12px 0 0;font-size:10px;color:#9ca3af;border-top:1px solid #e5e7eb;padding-top:8px;text-align:center">Relat\u00f3rio gerado automaticamente pelo <strong>Effort Track</strong></p>
+</div>`.trim();
 }
 
 export async function copyReportToClipboard(project, metrics) {
