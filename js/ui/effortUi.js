@@ -3,7 +3,6 @@ import { parseTimeToMinutes, maskTimeInput } from "../utils/timeUtils.js";
 import { addProject } from "../services/projectStorage.js";
 import { getSettings } from "../services/settingsStorage.js";
 import { refreshProjectList } from "./projectTrackingUi.js";
-import { getSettings } from "../services/settingsStorage.js";
 
 function showNamePrompt() {
   return new Promise((resolve) => {
