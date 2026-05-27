@@ -315,25 +315,23 @@ export function initProjectTrackingUi() {
       card.querySelector('.btn-email-proj').addEventListener('click', async (e) => {
         e.currentTarget.disabled = true;
         try {
+          await copyReportToClipboard(project, metrics);
+          const url = generateMailToUrl(project, metrics);
           if (navigator.share && window.innerWidth < 768) {
-            const plain = generatePlainTextBody(project, metrics);
-            await navigator.share({ title: project.title, text: plain });
+            await navigator.share({ title: project.title, text: generatePlainTextBody(project, metrics) });
+          } else if (url.length > 8000) {
+            showToast('Relatório HTML copiado! Cole no corpo do email.');
           } else {
-            const url = generateMailToUrl(project, metrics);
-            if (url.length > 8000) {
-              await navigator.clipboard.writeText(generatePlainTextBody(project, metrics));
-              showToast('Relatório copiado para a área de transferência (muito grande para o email direto).');
-            } else {
-              window.location.href = url;
-            }
+            showToast('Relatório HTML copiado! Abra o email e cole.');
+            window.location.href = url;
           }
         } catch (err) {
           if (err.name !== 'AbortError') {
-            try {
-              await navigator.clipboard.writeText(generatePlainTextBody(project, metrics));
-              showToast('Relatório copiado para a área de transferência. Abra seu email e cole.');
-            } catch (_) {
-              showToast('Não foi possível abrir o aplicativo de email. Copie o relatório manualmente.');
+            const fallbackOk = await copyReportToClipboard(project, metrics);
+            if (fallbackOk.success) {
+              showToast('Relatório copiado! Abra seu email e cole (Ctrl+V).');
+            } else {
+              showToast('Não foi possível copiar o relatório. Copie manualmente.');
             }
           }
         } finally {
