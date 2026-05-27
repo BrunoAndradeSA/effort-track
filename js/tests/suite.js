@@ -4,6 +4,7 @@ import { Parser } from "../parser/parser.js";
 import { calculateExpression } from "../parser/evaluator.js";
 import { calculateEffort } from "../services/effortCalculator.js";
 import { calculateProjectMetrics } from "../services/projectCalculations.js";
+import { generatePlainTextBody, generateHtmlBody, generateMailToUrl } from "../services/emailReport.js";
 
 // Helper de asserção simples
 function assertEqual(actual, expected, message = "") {
@@ -22,6 +23,18 @@ function assertThrows(fn, messagePart = "", message = "") {
     return; // Passa no teste
   }
   throw new Error(`${message || "Falha na asserção"}: esperava que a função lançasse um erro, mas ela executou com sucesso.`);
+}
+
+function assertContains(text, substring, message = "") {
+  if (!text.includes(substring)) {
+    throw new Error(`${message || "Falha na asserção"}: esperava que o texto contivesse "${substring}", mas não encontrou.`);
+  }
+}
+
+function assertMatch(text, regex, message = "") {
+  if (!regex.test(text)) {
+    throw new Error(`${message || "Falha na asserção"}: esperava que o texto correspondesse a ${regex}, mas não correspondeu.`);
+  }
 }
 
 export const testSuite = [
@@ -592,6 +605,152 @@ export const testSuite = [
       assertEqual(metrics.bottleneckRemainingDays, 3); // 50h restantes / 24h dia = 2.08 → ceil 3
       assertEqual(metrics.overallProgressReal, 50);
       assertEqual(metrics.visualStatus, "warning");
+    }
+  },
+  {
+    name: "Deve retornar overallProgressReal 100 para projeto concluído sem horas realizadas",
+    category: "acompanhamento_projetos",
+    run() {
+      const project = {
+        title: "Projeto H",
+        startDate: "2026-06-01",
+        endDate: "2026-06-05",
+        completed: true,
+        qtyDevs: 2, hoursPerDev: 8, qtyQas: 1, hoursPerQa: 6,
+        estimatedDevHours: 80, estimatedQaHours: 30,
+        hoursDevRealized: 0, hoursQaRealized: 0
+      };
+      const metrics = calculateProjectMetrics(project, "2026-06-03");
+      assertEqual(metrics.successChance, 100);
+      assertEqual(metrics.visualStatus, "completed");
+    }
+  },
+  {
+    name: "Deve projetar conclusão para data de início se projeto não começou e sem gargalo",
+    category: "acompanhamento_projetos",
+    run() {
+      const project = {
+        title: "Projeto I",
+        startDate: "2026-06-08",
+        endDate: "2026-06-12",
+        completed: false,
+        qtyDevs: 1, hoursPerDev: 8, qtyQas: 0, hoursPerQa: 0,
+        estimatedDevHours: 0, estimatedQaHours: 0,
+        hoursDevRealized: 0, hoursQaRealized: 0
+      };
+      const metrics = calculateProjectMetrics(project, "2026-06-01");
+      assertEqual(metrics.projectedCompletionDate, "2026-06-08");
+      assertEqual(metrics.successChance, 100);
+    }
+  },
+
+  // --- RELATÓRIO DE EMAIL ---
+  {
+    name: "Deve gerar texto plano com informações básicas do projeto",
+    category: "relatorio",
+    run() {
+      const project = {
+        title: "Projeto Email",
+        startDate: "2026-06-01",
+        endDate: "2026-06-12",
+        completed: false,
+        qtyDevs: 3, hoursPerDev: 8, qtyQas: 2, hoursPerQa: 6,
+        estimatedDevHours: 180, estimatedQaHours: 60,
+        hoursDevRealized: 90, hoursQaRealized: 20,
+        stakeholderEmails: ["gestor@teste.com"]
+      };
+      const metrics = calculateProjectMetrics(project, "2026-06-05");
+      const text = generatePlainTextBody(project, metrics);
+      assertContains(text, "Projeto Email");
+      assertContains(text, "Acompanhamento de Evolução");
+      assertContains(text, "3 devs");
+      assertContains(text, "2 qas");
+      assertContains(text, "(50%)"); // devProgressReal = 90/180 * 100
+    }
+  },
+  {
+    name: "Deve incluir 0% no texto plano quando não há horas realizadas",
+    category: "relatorio",
+    run() {
+      const project = {
+        title: "Projeto Zero",
+        startDate: "2026-06-01",
+        endDate: "2026-06-05",
+        completed: false,
+        qtyDevs: 2, hoursPerDev: 8, qtyQas: 1, hoursPerQa: 6,
+        estimatedDevHours: 80, estimatedQaHours: 30,
+        hoursDevRealized: 0, hoursQaRealized: 0,
+        stakeholderEmails: []
+      };
+      const metrics = calculateProjectMetrics(project, "2026-06-01");
+      const text = generatePlainTextBody(project, metrics);
+      assertContains(text, "(0%)");
+      assertContains(text, "0h de 80h");
+      assertContains(text, "0h de 30h");
+    }
+  },
+  {
+    name: "Deve gerar HTML com estrutura esperada",
+    category: "relatorio",
+    run() {
+      const project = {
+        title: "Projeto HTML",
+        startDate: "2026-06-01",
+        endDate: "2026-06-05",
+        completed: false,
+        qtyDevs: 2, hoursPerDev: 8, qtyQas: 1, hoursPerQa: 6,
+        estimatedDevHours: 80, estimatedQaHours: 30,
+        hoursDevRealized: 40, hoursQaRealized: 15,
+        stakeholderEmails: []
+      };
+      const metrics = calculateProjectMetrics(project, "2026-06-03");
+      const html = generateHtmlBody(project, metrics);
+      assertContains(html, "<div");
+      assertContains(html, "Projeto HTML");
+      assertContains(html, "svg"); // gráficos SVG
+      assertContains(html, "Effort Track");
+      assertMatch(html, /style="/); // estilos inline
+    }
+  },
+  {
+    name: "Deve gerar mailto com destinatários e assunto",
+    category: "relatorio",
+    run() {
+      const project = {
+        title: "Projeto Mail",
+        startDate: "2026-06-01",
+        endDate: "2026-06-05",
+        completed: false,
+        qtyDevs: 2, hoursPerDev: 8, qtyQas: 1, hoursPerQa: 6,
+        estimatedDevHours: 80, estimatedQaHours: 30,
+        hoursDevRealized: 0, hoursQaRealized: 0,
+        stakeholderEmails: ["a@teste.com", "b@teste.com"]
+      };
+      const metrics = calculateProjectMetrics(project, "2026-06-01");
+      const url = generateMailToUrl(project, metrics);
+      assertContains(url, "mailto:a@teste.com,b@teste.com");
+      assertContains(url, "subject=");
+      assertContains(url, "body=");
+      assertContains(url, encodeURIComponent("Projeto Mail"));
+    }
+  },
+  {
+    name: "Deve gerar mailto sem destinatários quando não há emails",
+    category: "relatorio",
+    run() {
+      const project = {
+        title: "Projeto Sem Email",
+        startDate: "2026-06-01",
+        endDate: "2026-06-05",
+        completed: false,
+        qtyDevs: 1, hoursPerDev: 8, qtyQas: 0, hoursPerQa: 0,
+        estimatedDevHours: 40, estimatedQaHours: 0,
+        hoursDevRealized: 10, hoursQaRealized: 0,
+        stakeholderEmails: []
+      };
+      const metrics = calculateProjectMetrics(project, "2026-06-03");
+      const url = generateMailToUrl(project, metrics);
+      assertMatch(url, /^mailto:\?/);
     }
   }
 ];
