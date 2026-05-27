@@ -848,7 +848,13 @@ input[type="date"] {
 }
 
 .diff-stat-icon {
-  font-size: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  color: var(--accent);
+}
+
+.diff-stat-icon svg {
+  display: block;
 }
 
 .diff-stat-label {
@@ -1210,7 +1216,15 @@ input[type="date"] {
   }
 
   .diff-stat-icon {
-    font-size: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    color: var(--accent);
+  }
+
+  .diff-stat-icon svg {
+    display: block;
+    width: 20px;
+    height: 20px;
   }
 
   /* Testes */

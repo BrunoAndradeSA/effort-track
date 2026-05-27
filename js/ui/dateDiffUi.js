@@ -1,4 +1,5 @@
 import { calculateWorkingDays, parseTimeToMinutes, maskTimeInput } from "../utils/timeUtils.js";
+import { getSettings } from "../services/settingsStorage.js";
 
 export function initDateDiffUi() {
   const startInput = document.getElementById("diff-start-date");
@@ -89,7 +90,7 @@ export function initDateDiffUi() {
   };
   startInput.value = fmt(today);
   endInput.value = fmt(end);
-  hoursInput.value = "08:00";
+  hoursInput.value = getSettings().defaultHoursPerDay;
 
   update();
 }
